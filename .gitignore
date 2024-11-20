@@ -1,1 +1,3 @@
 */.env
+/postgres16/config/init.sql
+/postgres16/pgadmin-data/pgadmin4.db

@@ -1,0 +1,56 @@
+# Labels for Traefik, Watchtower, and Autoheal
+#   (docker compose ignores fields that start with `x-`. So we can use them to
+#    define reusable fragments with `&anchors`. See:
+#    https://docs.docker.com/compose/compose-file/11-extension/ )
+x-labels: &base_labels
+      com.centurylinklabs.watchtower.enable: "true"
+      autoheal: "true"
+
+# Reusable default networks configuration to ensure container is part of both
+# the traefik network and the default network of this compose file
+x-networks: &base_networks
+  default:
+      
+  db_net:
+    aliases:
+      - vaultwarden
+
+# The main Docker Compose file
+services:
+  vaultwarden:
+    image: "vaultwarden/server:1.32.5"
+    container_name: vaultwarden
+    mem_limit: 512m
+    mem_reservation: 256m
+    cpu_shares: 1024
+    security_opt:
+      - no-new-privileges:true
+    user: "1029:100"
+    restart: on-failure:5
+    ports:
+      - 4080:4020    
+    volumes:
+      - "/volume1/docker/vaultwarden:/data:rw"
+    environment:
+      - "ROCKET_PORT=4020"
+      - "DOMAIN=https://vaultwarden.zoonas.i234.me"
+#      - "DATABASE_URL=${DATABASE_URL_ENV}"
+      - "TZ=Europe/Zurich"
+      - "INVITATION_ORG_NAME=home"
+      - "ADMIN_TOKEN=${ADMIN_TOKEN_ENV}"      
+      - "WEBSOCKET_ENABLED=True"
+      - "SMTP_HOST=192.168.178.24"
+      - "SMTP_FROM=vaultwarden@vaultwarden.zoonas.i234.me"
+      - "SMTP_FROM_NAME=Vaultwarden"
+      - "SMTP_SECURITY=off"
+      - "SMTP_PORT=2500"
+      - "SMTP_AUTH_MECHANISM=Plain"      
+
+    labels: *base_labels
+    networks: *base_networks
+
+networks:
+  # Access the db-network
+  db_net:
+    name: db_network
+    external: true
