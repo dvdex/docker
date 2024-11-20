@@ -1,0 +1,54 @@
+#
+# Ansible managed
+#
+
+# Labels for Traefik, Watchtower, and Autoheal
+#   (docker compose ignores fields that start with `x-`. So we can use them to
+#    define reusable fragments with `&anchors`. See:
+#    https://docs.docker.com/compose/compose-file/11-extension/ )
+x-labels: &base_labels
+      traefik.enable: "true"
+      traefik.docker.network: "traefik_network"
+      traefik.http.services.inbucket.loadbalancer.server.port: "9000"
+      traefik.http.routers.inbucket_web.EntryPoints: "web-secure"
+      traefik.http.routers.inbucket_web.rule: "Host(`webmail.tapir-boa.work`)"
+      traefik.http.routers.inbucket_web.service: "inbucket"
+      traefik.http.routers.inbucket_web.tls: true
+      traefik.http.routers.inbucket_web.tls.certresolver: "default"
+      com.centurylinklabs.watchtower.enable: "true"
+      autoheal: "true"
+
+# Reusable default networks configuration to ensure container is part of both
+# the traefik network and the default network of this compose file
+x-networks: &base_networks
+  default:
+  
+  traefik_net:
+    aliases:
+      - inbucket
+      
+
+# The main Docker Compose file
+services:
+  inbucket:
+    container_name: "inbucket"
+    image: "inbucket/inbucket:latest"
+    expose: # Ports: SMTP, POP3
+      - "2500"    
+      - "1100"    
+    restart: unless-stopped
+    volumes:
+      - "/volume1/docker/inbucket/config:/config"
+      - "/volume1/docker/inbucket/storage:/storage"
+    environment:
+      - "INBUCKET_WEB_BASEPATH=${INBUCKET_WEB_BASEPATH_ENV}"
+    labels: *base_labels
+    networks: *base_networks
+
+
+
+networks:
+  # Access the traefik-network
+  traefik_net:
+    name: traefik_network
+    external: true
