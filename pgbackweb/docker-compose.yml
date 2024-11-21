@@ -1,0 +1,66 @@
+#
+# Ansible managed
+#
+
+# Labels for Traefik, Watchtower, and Autoheal
+#   (docker compose ignores fields that start with `x-`. So we can use them to
+#    define reusable fragments with `&anchors`. See:
+#    https://docs.docker.com/compose/compose-file/11-extension/ )
+x-labels: &base_labels
+      traefik.enable: "true"
+      traefik.docker.network: "traefik_network"
+      traefik.http.services.pgbackweb.loadbalancer.server.port: "8085"
+      traefik.http.routers.pgbackweb_web.EntryPoints: "web-secure"
+      traefik.http.routers.pgbackweb_web.rule: "Host(`pgbackweb.kite-gila.work`)"
+      traefik.http.routers.pgbackweb_web.service: "pgbackweb"
+      traefik.http.routers.pgbackweb_web.tls: true
+      traefik.http.routers.pgbackweb_web.tls.certresolver: "default"
+      com.centurylinklabs.watchtower.enable: "true"
+      autoheal: "true"
+
+# Reusable default networks configuration to ensure container is part of both
+# the traefik network and the default network of this compose file
+x-networks: &base_networks
+  default:
+  
+  traefik_net:
+    aliases:
+      - pgbackweb
+      
+  db_net:
+    aliases:
+      - pgbackweb
+
+# The main Docker Compose file
+services:
+  pgbackweb:
+    image: eduardolat/pgbackweb:latest
+    container_name: pgbackweb
+    user: "1000:1002"
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8085' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    restart: on-failure:5
+#    ports:
+#      - 8095:8085
+    environment:
+      - "TZ=Europe/Berlin"
+      - "PBW_ENCRYPTION_KEY=${PBW_ENCRYPTION_KEY_ENV}"
+      - "PBW_POSTGRES_CONN_STRING=${PBW_POSTGRES_CONN_STRING_ENV}"      
+    volumes:
+      - "/volume1/docker/backup:/backups:rw"
+    labels: *base_labels
+    networks: *base_networks
+
+networks:
+  # Access the traefik-network
+  traefik_net:
+    name: traefik_network
+    external: true
+# Access the db-network
+  db_net:
+    name: db_network
+    external: true

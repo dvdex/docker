@@ -9,12 +9,12 @@
 x-labels: &base_labels
       traefik.enable: "true"
       traefik.docker.network: "traefik_network"
-      traefik.http.services.inbucket.loadbalancer.server.port: "9000"
-      traefik.http.routers.inbucket_web.EntryPoints: "web-secure"
-      traefik.http.routers.inbucket_web.rule: "Host(`webmail.kite-gila.work`)"
-      traefik.http.routers.inbucket_web.service: "inbucket"
-      traefik.http.routers.inbucket_web.tls: true
-      traefik.http.routers.inbucket_web.tls.certresolver: "default"
+      traefik.http.services.homarr.loadbalancer.server.port: "7575"
+      traefik.http.routers.homarr_web.EntryPoints: "web-secure"
+      traefik.http.routers.homarr_web.rule: "Host(`home.kite-gila.work`)"
+      traefik.http.routers.homarr_web.service: "homarr"
+      traefik.http.routers.homarr_web.tls: true
+      traefik.http.routers.homarr_web.tls.certresolver: "default"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
 
@@ -25,23 +25,22 @@ x-networks: &base_networks
   
   traefik_net:
     aliases:
-      - inbucket
+      - homarr
       
 
 # The main Docker Compose file
 services:
-  inbucket:
-    container_name: "inbucket"
-    image: "inbucket/inbucket:latest"
-    expose: # Ports: SMTP, POP3
-      - "2500"    
-      - "1100"    
+  homarr:
+    container_name: "homarr"
+    image: "ghcr.io/ajnart/homarr:latest"
     restart: unless-stopped
     volumes:
-      - "/volume1/docker/inbucket/config:/config"
-      - "/volume1/docker/inbucket/storage:/storage"
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - "/volume1/docker/homarr/configs:/app/data/configs"
+      - "/volume1/docker/homarr/icons:/app/public/icons"
+      - "/volume1/docker/homarr/data:/data:rw"
     environment:
-      - "INBUCKET_WEB_BASEPATH=webmail.kite-gila.work"
+      - "BASE_URL=home.kite-gila.work"
     labels: *base_labels
     networks: *base_networks
 
