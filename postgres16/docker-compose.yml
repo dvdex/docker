@@ -13,7 +13,7 @@ x-networks: &base_networks
       
   db_net:
     aliases:
-      - pgadmin16
+      - postgres16
 
 # The main Docker Compose file
 services:
