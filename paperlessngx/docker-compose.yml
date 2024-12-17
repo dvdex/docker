@@ -17,28 +17,6 @@ x-networks: &base_networks
 
 # The main Docker Compose file
 services:
-  redis:
-    image: redis:7
-    command:
-      - /bin/sh
-      - -c
-      - redis-server --requirepass redisPass7    
-    container_name: paperless-redis
-    mem_limit: 512m
-    mem_reservation: 256m
-    cpu_shares: 768
-    security_opt:
-      - no-new-privileges:true
-    read_only: true
-    user: "1029:100"
-    healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
-    volumes:
-      - "/volume1/docker/paperlessngx/data_redis:/data:rw"
-    environment:
-      - TZ="Europe/Zurich"
-    restart: on-failure:5      
-
   paperlessngx:
     image: "ghcr.io/paperless-ngx/paperless-ngx:2.13.5"
     container_name: "paperlessngx"
@@ -60,7 +38,7 @@ services:
       - "/volume1/homes/basync/consume:/usr/src/paperless/consume:rw"
       - "/volume1/docker/paperlessngx/trash:/usr/src/paperless/trash:rw"
     environment:
-      PAPERLESS_REDIS: redis://:redisPass7@redis:6379
+      PAPERLESS_REDIS: "redis://:${REDIS_PASSWORD_ENV}@redis7:6379/5"
       PAPERLESS_DBENGINE: postgresql
       PAPERLESS_DBHOST: postgres16
       PAPERLESS_DBNAME: paperless
@@ -80,9 +58,6 @@ services:
       PAPERLESS_OCR_LANGUAGE: deu+eng
       PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
     restart: on-failure:5
-    depends_on:
-      redis:
-        condition: service_healthy
     labels: *base_labels
     networks: *base_networks
 
