@@ -13,7 +13,7 @@ x-networks: &base_networks
       
   db_net:
     aliases:
-      - redis-commander
+      - redis7
 
 # The main Docker Compose file
 services:
