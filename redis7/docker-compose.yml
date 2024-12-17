@@ -11,35 +11,55 @@ x-labels: &base_labels
 x-networks: &base_networks
   default:
       
+  db_net:
+    aliases:
+      - redis-commander
 
 # The main Docker Compose file
 services:
-  syncthing:
-    image: "ghcr.io/linuxserver/syncthing:latest"
-    container_name: "syncthing"
-    healthcheck:
-      test: curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1
-      interval: 1m
-      timeout: 10s
-      retries: 3
-    restart: on-failure:5
+  redis7:
+    image: redis:7
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass ${REDIS_PASSWORD_ENV}    
+    container_name: redis7
+    hostname: redis7
+    mem_limit: 512m
+    mem_reservation: 256m
+    cpu_shares: 768
     security_opt:
       - no-new-privileges:true
-    ports:
-      - 8384:8384
-      - 22000:22000/tcp
-      - 22000:22000/udp
-      - 21027:21027/udp
-    environment:
-      - PUID=1029
-      - PGID=100
-      - TZ=Europe/Zurich
+    read_only: true
+    user: "1029:100"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
     volumes:
-      - "/volume1/docker/syncthing/config:/config:rw"
-      - "/volume1/docker/syncthing/data:/data:rw"
+      - "/volume1/docker/redis7/data:/data:rw"
+    environment:
+      - TZ="Europe/Zurich"
+    restart: on-failure:5
+    networks: *base_networks    
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: ghcr.io/joeferner/redis-commander:latest
+    restart: on-failure:5
+    environment:
+    - REDIS_HOST=redis7
+    - REDIS_PORT=6379
+    - REDIS_PASSWORD=${REDIS_PASSWORD_ENV}
+    - HTTP_USER=${HTTP_USER_ENV}
+    - HTTP_PASSWORD=${HTTP_PASSWORD_ENV}
+
+#    ports:
+#    - "8081:8081"
     labels: *base_labels
     networks: *base_networks
 
-
 networks:
-  
+  # Access the db-network
+  db_net:
+    name: db_network
+    external: true
