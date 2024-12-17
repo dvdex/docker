@@ -41,5 +41,3 @@ services:
     networks: *base_networks
 
 
-networks:
-  
