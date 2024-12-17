@@ -35,13 +35,29 @@ services:
       - "/volume1/docker/postgres16/config/init.sql:/docker-entrypoint-initdb.d/init.sql"
       - "/volume1/docker/postgres16/data:/var/lib/postgresql/data"
     environment:
-      - "TZ=Europe/Berlin"
+      - "TZ=Europe/Zurich"
       - "POSTGRES_USER=${POSTGRES_USER_ENV}"
       - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD_ENV}"
+    command:
+      [
+        'postgres',
+        '-c',
+        'shared_preload_libraries=vectors.so',
+        '-c',
+        'search_path="$$user", public, vectors',
+        '-c',
+        'logging_collector=on',
+        '-c',
+        'max_wal_size=2GB',
+        '-c',
+        'shared_buffers=512MB',
+        '-c',
+        'wal_compression=on',
+      ]      
     networks: *base_networks
 
   pgadmin16:
-    image: "dpage/pgadmin4:8.11"
+    image: "dpage/pgadmin4:latest"
     container_name: "pgadmin16"
     user: "1029:100"
     healthcheck:
