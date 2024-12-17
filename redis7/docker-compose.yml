@@ -53,8 +53,8 @@ services:
     - HTTP_USER=${HTTP_USER_ENV}
     - HTTP_PASSWORD=${HTTP_PASSWORD_ENV}
 
-#    ports:
-#    - "8081:8081"
+    ports:
+    - "8081:8081"
     labels: *base_labels
     networks: *base_networks
 
