@@ -25,7 +25,7 @@ services:
     security_opt:
       - no-new-privileges:true
     env_file:
-      - .env
+      - immich.env
     ports:
       - 2283:2283
     volumes:
@@ -43,7 +43,7 @@ services:
     security_opt:
       - no-new-privileges:true
     env_file:
-      - .env
+      - immich.env
     volumes:
       - "/volume1/docker/immich/cache:/cache:rw"
     restart: on-failure:5
@@ -55,7 +55,7 @@ services:
     restart: unless-stopped
     environment:
       API_URL: http://zoonas.i234.me:2283/api
-      API_KEY: PyyEks94bZijYVj1viZT5IGjhvipLu7NZjkKXXQD9Q
+      API_KEY: ${API_KEY_ENV}
       ROOT_PATH: /usr/src/app/external
       ALBUM_LEVELS: 2
       SET_ALBUM_THUMBNAIL: first
