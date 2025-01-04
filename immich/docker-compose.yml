@@ -27,7 +27,7 @@ services:
     env_file:
       - .env
     ports:
-      -2283:2283
+      - 2283:2283
     volumes:
       - "/volume1/docker/immich/upload:/usr/src/app/upload:rw"
       - "/volume1/docker/sftpgo/data/home/minda/photo:/usr/src/app/external:rw"
