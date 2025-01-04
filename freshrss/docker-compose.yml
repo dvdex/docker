@@ -29,6 +29,8 @@ services:
       retries: 3
       start_period: 30s      
     restart: on-failure:5
+    ports:
+      - 8098:80    
     logging:
       options:
         max-size: 10m
