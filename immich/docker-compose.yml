@@ -19,8 +19,7 @@ x-networks: &base_networks
 services:
   immich:
     image: ghcr.io/immich-app/immich-server:release
-    container_name: "immich"
-    hostname: immich
+    container_name: immich
     user: 1029:100
     security_opt:
       - no-new-privileges:true
@@ -37,8 +36,7 @@ services:
 
   immich-machine-learning:
     image: ghcr.io/immich-app/immich-machine-learning:release
-    container_name: Immich-LEARNING
-    hostname: immich-machine-learning
+    container_name: immichml
     user: 1029:100
     security_opt:
       - no-new-privileges:true
@@ -50,7 +48,7 @@ services:
     networks: *base_networks
 
   immich-folder-album-creator:
-    container_name: immich_folder_album_creator
+    container_name: immichalbumcreator
     image: salvoxia/immich-folder-album-creator:latest
     restart: unless-stopped
     environment:

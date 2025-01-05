@@ -24,7 +24,6 @@ services:
       - -c
       - redis-server --requirepass ${REDIS_PASSWORD_ENV}    
     container_name: redis7
-    hostname: redis7
     mem_limit: 512m
     mem_reservation: 256m
     cpu_shares: 768
@@ -41,9 +40,8 @@ services:
     restart: on-failure:5
     networks: *base_networks    
 
-  redis-commander:
-    container_name: redis-commander
-    hostname: redis-commander
+  rediscommander:
+    container_name: rediscommander
     image: ghcr.io/joeferner/redis-commander:latest
     restart: on-failure:5
     environment:
