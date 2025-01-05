@@ -40,24 +40,24 @@ services:
     restart: on-failure:5
     networks: *base_networks    
 
-  rediscommander:
-    container_name: rediscommander
-    image: ghcr.io/joeferner/redis-commander:latest
-    restart: on-failure:5
-    depends_on:
-      redis7:
-        condition: service_healthy
-    environment:
-    - REDIS_HOST=redis7
-    - REDIS_PORT=6379
-    - REDIS_PASSWORD=${REDIS_PASSWORD_ENV}
-    - HTTP_USER=${HTTP_USER_ENV}
-    - HTTP_PASSWORD=${HTTP_PASSWORD_ENV}
+  # rediscommander:
+    # container_name: rediscommander
+    # image: ghcr.io/joeferner/redis-commander:latest
+    # restart: on-failure:5
+    # depends_on:
+      # redis7:
+        # condition: service_healthy
+    # environment:
+    # - REDIS_HOST=redis7
+    # - REDIS_PORT=6379
+    # - REDIS_PASSWORD=${REDIS_PASSWORD_ENV}
+    # - HTTP_USER=${HTTP_USER_ENV}
+    # - HTTP_PASSWORD=${HTTP_PASSWORD_ENV}
 
-    ports:
-    - "8081:8081"
-    labels: *base_labels
-    networks: *base_networks
+    # ports:
+    # - "8081:8081"
+    # labels: *base_labels
+    # networks: *base_networks
 
 networks:
   # Access the db-network
