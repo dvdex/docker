@@ -44,6 +44,9 @@ services:
     container_name: rediscommander
     image: ghcr.io/joeferner/redis-commander:latest
     restart: on-failure:5
+    depends_on:
+      redis7:
+        condition: service_healthy
     environment:
     - REDIS_HOST=redis7
     - REDIS_PORT=6379
