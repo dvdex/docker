@@ -54,7 +54,7 @@ services:
     image: salvoxia/immich-folder-album-creator:latest
     restart: unless-stopped
     environment:
-      API_URL: http://zoonas.i234.me:2283/api
+      API_URL: http://192.168.178.24:2283/api
       API_KEY: ${API_KEY_ENV}
       ROOT_PATH: /usr/src/app/external
       ALBUM_LEVELS: 2
