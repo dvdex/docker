@@ -18,7 +18,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   freshrss:
-    image: "ghcr.io/linuxserver/freshrss:1.24.3"
+    image: ghcr.io/linuxserver/freshrss:1.25.0
     container_name: "freshrss"
     security_opt:
       - no-new-privileges:true

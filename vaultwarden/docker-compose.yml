@@ -18,7 +18,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   vaultwarden:
-    image: "vaultwarden/server:1.32.5"
+    image: vaultwarden/server:1.32.7
     container_name: vaultwarden
     mem_limit: 512m
     mem_reservation: 256m
