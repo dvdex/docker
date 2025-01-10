@@ -18,7 +18,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   immich:
-    image: ghcr.io/immich-app/immich-server:release
+    image: ghcr.io/immich-app/immich-server:${IMMICH_VERSION}
     container_name: immich
     user: 1029:100
     security_opt:
@@ -35,7 +35,7 @@ services:
     networks: *base_networks
 
   immich-machine-learning:
-    image: ghcr.io/immich-app/immich-machine-learning:release
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_VERSION}
     container_name: immichml
     user: 1029:100
     security_opt:
