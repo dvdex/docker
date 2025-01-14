@@ -12,11 +12,16 @@ x-labels: &base_labels
       traefik.http.services.pgbackweb.loadbalancer.server.port: "8085"
       traefik.http.routers.pgbackweb_web.EntryPoints: "web-secure"
       traefik.http.routers.pgbackweb_web.rule: "Host(`pgbackweb.kite-gila.work`)"
+      homepage.name: "pgbackweb"
+      homepage.href: "https://pgbackweb.kite-gila.work/"
       traefik.http.routers.pgbackweb_web.service: "pgbackweb"
       traefik.http.routers.pgbackweb_web.tls: true
       traefik.http.routers.pgbackweb_web.tls.certresolver: "default"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
+      homepage.group: "Web"
+      homepage.description: "Postgres backup web UI"
+      homepage.icon: "urbackup"
 
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file

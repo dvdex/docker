@@ -12,11 +12,16 @@ x-labels: &base_labels
       traefik.http.services.sftpgo.loadbalancer.server.port: "8080"
       traefik.http.routers.sftpgo_web.EntryPoints: "web-secure"
       traefik.http.routers.sftpgo_web.rule: "Host(`sftpgo.kite-gila.work`)"
+      homepage.name: "sftpgo"
+      homepage.href: "https://sftpgo.kite-gila.work/"
       traefik.http.routers.sftpgo_web.service: "sftpgo"
       traefik.http.routers.sftpgo_web.tls: true
       traefik.http.routers.sftpgo_web.tls.certresolver: "default"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
+      homepage.group: "Media"
+      homepage.description: "SFTP, HTTPS and WebDAV server"
+      homepage.icon: "sftpgo"
 
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file

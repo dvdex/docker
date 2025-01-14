@@ -12,11 +12,16 @@ x-labels: &base_labels
       traefik.http.services.syncthing.loadbalancer.server.port: "8384"
       traefik.http.routers.syncthing_web.EntryPoints: "web-secure"
       traefik.http.routers.syncthing_web.rule: "Host(`sync.kite-gila.work`)"
+      homepage.name: "syncthing"
+      homepage.href: "https://sync.kite-gila.work/"
       traefik.http.routers.syncthing_web.service: "syncthing"
       traefik.http.routers.syncthing_web.tls: true
       traefik.http.routers.syncthing_web.tls.certresolver: "default"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
+      homepage.group: "Services"
+      homepage.description: "Continuous File Synchronization"
+      homepage.icon: "syncthing"
 
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file

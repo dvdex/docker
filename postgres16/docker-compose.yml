@@ -12,11 +12,16 @@ x-labels: &base_labels
       traefik.http.services.pgadmin16.loadbalancer.server.port: "80"
       traefik.http.routers.pgadmin16_web.EntryPoints: "web-secure"
       traefik.http.routers.pgadmin16_web.rule: "Host(`pgadmin16.kite-gila.work`)"
+      homepage.name: "pgadmin16"
+      homepage.href: "https://pgadmin16.kite-gila.work/"
       traefik.http.routers.pgadmin16_web.service: "pgadmin16"
       traefik.http.routers.pgadmin16_web.tls: true
       traefik.http.routers.pgadmin16_web.tls.certresolver: "default"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
+      homepage.group: "Web"
+      homepage.description: "Postgres administration web UI"
+      homepage.icon: "postgres"
 
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file
@@ -54,6 +59,22 @@ services:
       - "TZ=Europe/Berlin"
       - "POSTGRES_USER=${POSTGRES_USER_ENV}"
       - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD_ENV}"
+    command:
+      [
+        'postgres',
+        '-c',
+        'shared_preload_libraries=vectors.so',
+        '-c',
+        'search_path="$$user", public, vectors',
+        '-c',
+        'logging_collector=on',
+        '-c',
+        'max_wal_size=2GB',
+        '-c',
+        'shared_buffers=512MB',
+        '-c',
+        'wal_compression=on',
+      ]      
     networks: *base_networks
 
   pgadmin16:

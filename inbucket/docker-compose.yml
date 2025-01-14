@@ -12,11 +12,16 @@ x-labels: &base_labels
       traefik.http.services.inbucket.loadbalancer.server.port: "9000"
       traefik.http.routers.inbucket_web.EntryPoints: "web-secure"
       traefik.http.routers.inbucket_web.rule: "Host(`webmail.kite-gila.work`)"
+      homepage.name: "inbucket"
+      homepage.href: "https://webmail.kite-gila.work/"
       traefik.http.routers.inbucket_web.service: "inbucket"
       traefik.http.routers.inbucket_web.tls: true
       traefik.http.routers.inbucket_web.tls.certresolver: "default"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
+      homepage.group: "Services"
+      homepage.description: "Disposable webmail service"
+      homepage.icon: "docker-mailserver"
 
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file

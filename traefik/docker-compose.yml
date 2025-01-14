@@ -12,11 +12,16 @@ x-labels: &base_labels
       traefik.http.services.traefik.loadbalancer.server.port: "8080"
       traefik.http.routers.traefik_web.EntryPoints: "web-secure"
       traefik.http.routers.traefik_web.rule: "Host(`traefik.kite-gila.work`)"
+      homepage.name: "traefik"
+      homepage.href: "https://traefik.kite-gila.work/"
       traefik.http.routers.traefik_web.service: "traefik"
       traefik.http.routers.traefik_web.tls: true
       traefik.http.routers.traefik_web.tls.certresolver: "default"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
+      homepage.group: "Services"
+      homepage.description: "Reverse proxy and load balancer"
+      homepage.icon: "traefik"
 
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file
