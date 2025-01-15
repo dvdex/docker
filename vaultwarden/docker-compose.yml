@@ -7,7 +7,7 @@ x-labels: &base_labels
       homepage.href: "https://vaultwarden.zoonas.i234.me/"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
-      homepage.group: "Security"
+      homepage.group: "Web"
       homepage.description: "Bitwarden community driven password safe"
       homepage.icon: "bitwarden"
 
