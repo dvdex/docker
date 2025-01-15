@@ -1,0 +1,76 @@
+#
+# Ansible managed
+#
+
+# Labels for Traefik, Watchtower, and Autoheal
+#   (docker compose ignores fields that start with `x-`. So we can use them to
+#    define reusable fragments with `&anchors`. See:
+#    https://docs.docker.com/compose/compose-file/11-extension/ )
+x-labels: &base_labels
+      traefik.enable: "true"
+      traefik.docker.network: "traefik_network"
+      traefik.http.services.homepage.loadbalancer.server.port: "3000"
+      traefik.http.routers.homepage_web.EntryPoints: "web-secure"
+      traefik.http.routers.homepage_web.rule: "Host(`home.kite-gila.work`)"
+      homepage.name: "homepage"
+      homepage.href: "https://home.kite-gila.work/"
+      traefik.http.routers.homepage_web.service: "homepage"
+      traefik.http.routers.homepage_web.tls: true
+      traefik.http.routers.homepage_web.tls.certresolver: "default"
+      com.centurylinklabs.watchtower.enable: "true"
+      autoheal: "true"
+      homepage.group: ""
+      
+      homepage.icon: "homepage"
+
+# Reusable default networks configuration to ensure container is part of both
+# the traefik network and the default network of this compose file
+x-networks: &base_networks
+  default:
+  
+  traefik_net:
+    aliases:
+      - homepage
+      
+
+# The main Docker Compose file
+services:
+  dockerproxy:
+    image: ghcr.io/tecnativa/docker-socket-proxy:latest
+    container_name: dockerproxy
+    environment:
+      - CONTAINERS=1 # Allow access to viewing containers
+      - SERVICES=1 # Allow access to viewing services (necessary when using Docker Swarm)
+      - TASKS=1 # Allow access to viewing tasks (necessary when using Docker Swarm)
+      - POST=0 # Disallow any POST operations (effectively read-only)
+    ports:
+      - 127.0.0.1:2375:2375
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro # Mounted as read-only
+    restart: unless-stopped
+
+  homepage:
+    container_name: "homepage"
+    image: ghcr.io/gethomepage/homepage:latest
+    mem_limit: 4g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    restart: on-failure:5
+#    ports:
+#      - 3550:3000
+    environment:
+      PUID: "1000"
+      PGID: "1002"
+    volumes:
+      - "/volume1/docker/homepage/config:/app/config:rw"
+      - "/volume1/docker/homepage/public:/app/public/images:rw"
+    labels: *base_labels
+    networks: *base_networks
+
+
+networks:
+  # Access the traefik-network
+  traefik_net:
+    name: traefik_network
+    external: true

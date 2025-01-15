@@ -3,8 +3,13 @@
 #    define reusable fragments with `&anchors`. See:
 #    https://docs.docker.com/compose/compose-file/11-extension/ )
 x-labels: &base_labels
+      homepage.name: "vaultwarden"
+      homepage.href: "https://sync.zoonas.i234.me/"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
+      homepage.group: "Security"
+      homepage.description: "Bitwarden community driven password safe"
+      homepage.icon: "bitwarden"
 
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file
