@@ -39,8 +39,8 @@ services:
     security_opt:
       - no-new-privileges:true
     restart: on-failure:5
-#    ports:
-#      - 3550:3000
+    ports:
+      - 3550:3000
     environment:
       PUID: "1029"
       PGID: "100"
