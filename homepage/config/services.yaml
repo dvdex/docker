@@ -1,4 +1,14 @@
 ---
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/services/
-
+- Services:
+  - FRITZ!Box:
+      icon: fritzbox
+      href: http://192.168.178.1
+      description: Fritzbox web UI
+      server: localhost
+      widget:
+        type: fritzbox
+        url: http://192.168.178.1
+        fields: ["connectionStatus", "received", "sent", "externalIPAddress"]
+ 

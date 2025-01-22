@@ -1,6 +1,13 @@
 ---
 # For configuration options and examples, please see:
 # https://gethomepage.dev/configs/info-widgets/
+- datetime:
+    text_size: xl
+    locale: de
+    format:
+        dateStyle: short
+        timeStyle: short
+        timeZone: 'Europe/Zurich'
 
 - resources:
     cpu: true

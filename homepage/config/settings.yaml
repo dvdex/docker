@@ -1,1 +1,3 @@
 background: /images/background.jpg
+showStats: false
+statusStyle: "dot"
