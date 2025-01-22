@@ -4,7 +4,7 @@
 #    https://docs.docker.com/compose/compose-file/11-extension/ )
 x-labels: &base_labels
       homepage.name: "vaultwarden"
-      homepage.href: "https://vaultwarden.zoonas.i234.me/"
+      homepage.href: "https://vaultwarden.naslyn.myds.me/"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
       homepage.group: "Web"
@@ -38,14 +38,14 @@ services:
       - "/volume1/docker/vaultwarden:/data:rw"
     environment:
       - "ROCKET_PORT=4020"
-      - "DOMAIN=https://vaultwarden.zoonas.i234.me"
+      - "DOMAIN=https://vaultwarden.naslyn.myds.me"
 #      - "DATABASE_URL=${DATABASE_URL_ENV}"
       - "TZ=Europe/Zurich"
       - "INVITATION_ORG_NAME=home"
       - "ADMIN_TOKEN=${ADMIN_TOKEN_ENV}"      
       - "WEBSOCKET_ENABLED=True"
-      - "SMTP_HOST=192.168.178.24"
-      - "SMTP_FROM=vaultwarden@vaultwarden.zoonas.i234.me"
+      - "SMTP_HOST=192.168.178.23"
+      - "SMTP_FROM=vaultwarden@vaultwarden.naslyn.myds.me"
       - "SMTP_FROM_NAME=Vaultwarden"
       - "SMTP_SECURITY=off"
       - "SMTP_PORT=2500"

@@ -7,6 +7,10 @@
         - abbr: SP
           icon: synology-dsm
           href: https://zoonas.i234.me/
+    - naslyn:
+        - abbr: NS
+          icon: synology-dsm
+          href: https://naslyn.myds.me/
 
 - Deploy:
     - home.kite-gila:
@@ -18,4 +22,4 @@
     - vaultwarden:
         - abbr: VW
           icon: bitwarden
-          href: https://vaultwarden.zoonas.i234.me/
+          href: https://vaultwarden.naslyn.myds.me/
