@@ -23,7 +23,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   sftpgo:
-    image: "drakkan/sftpgo:v2.6.3"
+    image: drakkan/sftpgo:v2.6.5
     user: "1029:100"
     container_name: "sftpgo"
     healthcheck:
