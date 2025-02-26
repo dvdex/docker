@@ -41,7 +41,7 @@ services:
   postgres16:
     container_name: postgres16
     user: "1000:1002"
-    image: tensorchord/pgvecto-rs:pg16-v0.2.0
+    image: tensorchord/pgvecto-rs:pg16-v0.2.1
     mem_limit: 1g
     cpu_shares: 768
     security_opt:
