@@ -59,6 +59,8 @@ services:
       - "TZ=Europe/Berlin"
       - "POSTGRES_USER=${POSTGRES_USER_ENV}"
       - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD_ENV}"
+    labels:
+      autoheal: "true"
     command:
       [
         'postgres',
