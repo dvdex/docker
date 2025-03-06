@@ -41,4 +41,3 @@ services:
       - "/volume1/docker/unifi/work:/usr/lib/unifi/work"
     labels: *base_labels
     networks: *base_networks
-	
