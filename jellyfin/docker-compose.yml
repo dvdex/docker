@@ -39,8 +39,8 @@ services:
       - "/volume1/docker/jellyfin/config:/config:rw"
       - "/volume1/docker/jellyfin/cache:/cache:rw"
       - "/volume1/docker/jellyfin/logs:/logs:rw"
-      - "/volume1/media/video:/media:rw"
-#      - "/volume1/media/music:/music:rw"
+      - "/volume1/video:/media:rw"
+#      - "/volume1/music:/music:rw"
     restart: on-failure:5
     labels: *base_labels
     networks: *base_networks
