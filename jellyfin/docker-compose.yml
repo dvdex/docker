@@ -23,8 +23,6 @@ services:
     user: 1029:100
     mem_limit: 4g
     cpu_shares: 1024
-    security_opt:
-      - no-new-privileges:true    
     environment:
       TZ: "Europe/Zurich"
     healthcheck:
