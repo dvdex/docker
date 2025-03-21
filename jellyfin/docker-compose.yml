@@ -8,6 +8,8 @@ x-labels: &base_labels
       homepage.group: "Media"
       homepage.description: "Jellyfin media server"
       homepage.icon: "jellyfin"
+      homepage.name: "jellyfin"
+      homepage.href:"https://jellyfin.zoonas.i234.me/"
 
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file
