@@ -47,7 +47,7 @@ services:
 
   homepage:
     container_name: "homepage"
-    image: ghcr.io/gethomepage/homepage:v1.0.4
+    image: ghcr.io/gethomepage/homepage:latest
     mem_limit: 4g
     cpu_shares: 768
     security_opt:
@@ -58,7 +58,7 @@ services:
     environment:
       PUID: "1000"
       PGID: "109"
-      HOMEPAGE_ALLOWED_HOSTS: "home.tapir-boa.work:3550"
+      HOMEPAGE_ALLOWED_HOSTS: "home.tapir-boa.work"
     volumes:
       - "/volume1/docker/homepage/config:/app/config:rw"
       - "/volume1/docker/homepage/public:/app/public/images:rw"
