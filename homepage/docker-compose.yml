@@ -12,8 +12,6 @@ x-labels: &base_labels
       traefik.http.services.homepage.loadbalancer.server.port: "3000"
       traefik.http.routers.homepage_web.EntryPoints: "web-secure"
       traefik.http.routers.homepage_web.rule: "Host(`home.kite-gila.work`)"
-      homepage.name: "homepage"
-      homepage.href: "https://home.kite-gila.work/"
       traefik.http.routers.homepage_web.service: "homepage"
       traefik.http.routers.homepage_web.tls: true
       traefik.http.routers.homepage_web.tls.certresolver: "default"
@@ -23,8 +21,6 @@ x-labels: &base_labels
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file
 x-networks: &base_networks
-  default:
-  
   traefik_net:
     aliases:
       - homepage
