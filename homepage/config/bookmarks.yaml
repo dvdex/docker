@@ -13,6 +13,10 @@
         - abbr: KG
           icon: homepage
           href: https://home.kite-gila.work/
+    - home.zoonas.i234.me:
+        - abbr: ZN
+          icon: synology
+          href: https://home.zoonas.i234.me/          
 
 - Security:
     - vaultwarden:
