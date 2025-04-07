@@ -27,6 +27,7 @@ services:
     cpu_shares: 1024
     environment:
       TZ: "Europe/Zurich"
+      DOMAIN_NAME: "jellyfin.zoonas.i234.me"
     healthcheck:
       test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8096' || exit 1
       interval: 10s
