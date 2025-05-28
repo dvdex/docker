@@ -25,16 +25,16 @@ services:
   postgres16:
     container_name: postgres16
     user: "1029:100"
-    image: tensorchord/pgvecto-rs:pg16-v0.2.1
+    image: ghcr.io/immich-app/postgres:16-vectorchord0.3.0-pgvectors0.2.1
     mem_limit: 1g
     cpu_shares: 768
     security_opt:
       - no-new-privileges:true
-    healthcheck:
-      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "basync"]
-      timeout: 45s
-      interval: 10s
-      retries: 10
+    # healthcheck:
+      # test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "basync"]
+      # timeout: 45s
+      # interval: 10s
+      # retries: 10
     restart: on-failure:5
     volumes:
       - "/volume1/docker/postgres16/config/init.sql:/docker-entrypoint-initdb.d/init.sql"
@@ -43,22 +43,7 @@ services:
       - "TZ=Europe/Zurich"
       - "POSTGRES_USER=${POSTGRES_USER_ENV}"
       - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD_ENV}"
-    command:
-      [
-        'postgres',
-        '-c',
-        'shared_preload_libraries=vectors.so',
-        '-c',
-        'search_path="$$user", public, vectors',
-        '-c',
-        'logging_collector=on',
-        '-c',
-        'max_wal_size=2GB',
-        '-c',
-        'shared_buffers=512MB',
-        '-c',
-        'wal_compression=on',
-      ]      
+      - "DB_STORAGE_TYPE: 'HDD'"   
     networks: *base_networks
 
   pgadmin16:
