@@ -32,6 +32,9 @@ services:
       retries: 1
       start_period: 10s      
     restart: on-failure:5
+    depends_on:
+      db-check-service:
+        condition: service_healthy
     ports:
       - 8087:8080 # WEB
       - 2022:2022 # SFTP
@@ -74,6 +77,18 @@ services:
     labels: *base_labels
     networks: *base_networks          
 
+  db-check-service:
+    image: busybox
+    container_name: sftpgo-db-check-service
+    command: ["sh", "-c", "while true; do echo 'Running...'; sleep 3600; done"]
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://pgadmin16:80/misc/ping"]
+      interval: 120s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    networks: *base_networks
+    
 networks:
   # Access the db-network
   db_net:
