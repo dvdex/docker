@@ -49,7 +49,7 @@ services:
   db-check-service:
     image: busybox
     container_name: pgbackweb-db-check-service
-    command: ["sh", "-c", "while true; do echo 'Running...'; sleep 3600; done"]
+    command: ["sh", "-c", "while true; do echo $(date) 'Running...'; sleep 3600; done"]
     healthcheck:
       test: ["CMD", "wget", "-O", "-", "http://pgadmin16:80/misc/ping"]
       interval: 120s
