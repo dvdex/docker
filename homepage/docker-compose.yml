@@ -32,7 +32,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   dockerproxy:
-    image: ghcr.io/tecnativa/docker-socket-proxy:v0.3.0
+    image: ghcr.io/tecnativa/docker-socket-proxy:0.3.0
     container_name: dockerproxy
     environment:
       - CONTAINERS=1 # Allow access to viewing containers
