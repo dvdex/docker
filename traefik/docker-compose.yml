@@ -36,7 +36,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   traefik:
-    image: traefik:2.11.28
+    image: traefik:2.11.29
     container_name: "traefik"
     restart: always
     healthcheck:
