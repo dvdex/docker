@@ -31,7 +31,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 90s
-    restart: on-failure:5
+    restart: unless-stopped
     ports:
       - 8095:8085
     environment:
