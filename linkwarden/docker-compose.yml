@@ -55,7 +55,12 @@ services:
     environment:
       - "DATABASE_URL=${LW_POSTGRES_CONN_STRING_ENV}"
       - "NEXTAUTH_SECRET=${LW_NEXTAUTH_SECRET_ENV}"
-      - "NEXTAUTH_URL=http://localhost:3000/api/v1/auth"
+      - "NEXTAUTH_URL=https://linkwarden.kite-gila.work/api/v1/auth"
+      - "NEXT_PUBLIC_KEYCLOAK_ENABLED=true"
+      - "KEYCLOAK_CUSTOM_NAME=Pocket ID"
+      - "KEYCLOAK_ISSUER=https://pocketid.zoonas.i234.me"
+      - "KEYCLOAK_CLIENT_ID=${LW_CLIENT_ID_ENV}"
+      - "KEYCLOAK_CLIENT_SECRET=${LW_CLIENT_SECRET_ENV}"
 # Additional Optional Settings
 #      PAGINATION_TAKE_COUNT: 
 #      STORAGE_FOLDER: 
