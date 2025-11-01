@@ -95,6 +95,7 @@ services:
     volumes:
       - "/volume1/docker/postgres16/pgadmin-data:/var/lib/pgadmin"
       - "/volume1/docker/postgres16/log:/var/log"
+      - "/volume1/docker/postgres16/pgadmin-data/config_local.py:/pgadmin4/config_local.py"      
     environment:
       - "PGADMIN_DEFAULT_EMAIL=${PGADMIN_DEFAULT_EMAIL_ENV}"
       - "PGADMIN_DEFAULT_PASSWORD=${PGADMIN_DEFAULT_PASSWORD_ENV}"
