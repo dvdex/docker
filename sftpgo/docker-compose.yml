@@ -31,7 +31,7 @@ services:
       timeout: 5s
       retries: 3
       start_period: 100s      
-    restart: on-failure:5
+    restart: on-failure:10
     ports:
       - 8087:8080 # WEB
       - 2022:2022 # SFTP

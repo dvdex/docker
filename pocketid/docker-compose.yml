@@ -25,7 +25,7 @@ services:
   pocketid:
     image: "ghcr.io/pocket-id/pocket-id:v1"
     container_name: "pocketid"  
-    restart: on-failure:5
+    restart: on-failure:10
     ports:
       - 1411:1411
     # Optional healthcheck
