@@ -44,6 +44,8 @@ services:
       - BACKREST_CONFIG=/config/config.json # path for the backrest config file.
       - XDG_CACHE_HOME=/cache # path for the restic cache which greatly improves performance.
       - BACKREST_PORT=9898
+      - AZURE_ACCOUNT_NAME=${AZURE_ACCOUNT_NAME_ENV}
+      - AZURE_ACCOUNT_KEY=${AZURE_ACCOUNT_KEY_ENV}
     volumes:
       - "/volume1/docker/backrest/data:/data"
       - "/volume1/docker/backrest/config:/config"
