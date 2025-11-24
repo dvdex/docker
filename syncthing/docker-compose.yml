@@ -7,28 +7,22 @@
 #    define reusable fragments with `&anchors`. See:
 #    https://docs.docker.com/compose/compose-file/11-extension/ )
 x-labels: &base_labels
-      traefik.enable: "true"
-      traefik.docker.network: "traefik_network"
-      traefik.http.services.syncthing.loadbalancer.server.port: "8384"
-      traefik.http.routers.syncthing_web.EntryPoints: "web-secure"
-      traefik.http.routers.syncthing_web.rule: "Host(`sync.kite-gila.work`)"
       homepage.name: "syncthing"
-      homepage.href: "https://sync.kite-gila.work/"
-      traefik.http.routers.syncthing_web.service: "syncthing"
-      traefik.http.routers.syncthing_web.tls: true
-      traefik.http.routers.syncthing_web.tls.certresolver: "default"
+      homepage.href: "https://sync.parkhomes.work/"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
+      
       homepage.group: "Services"
       homepage.description: "Continuous File Synchronization"
+      
       homepage.icon: "syncthing"
 
 # Reusable default networks configuration to ensure container is part of both
-# the traefik network and the default network of this compose file
+# the pangolin network and the default network of this compose file
 x-networks: &base_networks
-  default:
+   
   
-  traefik_net:
+  pangolin_net:
     aliases:
       - syncthing
       
@@ -53,17 +47,17 @@ services:
 #      - 21027:21027/udp
     environment:
       - PUID=1000
-      - PGID=1002
+      - PGID=1001
       - TZ=Europe/Berlin
     volumes:
       - "/volume1/docker/syncthing/config:/config:rw"
-      - "/volume1/docker/syncthing/data:/data:rw"
+      - "/volume2/media:/data:rw"
     labels: *base_labels
     networks: *base_networks
 
 
 networks:
-  # Access the traefik-network
-  traefik_net:
-    name: traefik_network
+  # Access the pangolin-network
+  pangolin_net:
+    name: pangolin
     external: true

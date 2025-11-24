@@ -1,0 +1,65 @@
+#
+# Ansible managed
+#
+
+# Labels for Traefik, Watchtower, and Autoheal
+#   (docker compose ignores fields that start with `x-`. So we can use them to
+#    define reusable fragments with `&anchors`. See:
+#    https://docs.docker.com/compose/compose-file/11-extension/ )
+x-labels: &base_labels
+      homepage.name: "jellyfin"
+      homepage.href: "https://jellyfin.parkhomes.work/"
+      com.centurylinklabs.watchtower.enable: "true"
+      autoheal: "true"
+      homepage.group: "Media"
+      homepage.description: "Jellyfin media server"
+      homepage.icon: "jellyfin"
+
+# Reusable default networks configuration to ensure container is part of both
+# the pangolin network and the default network of this compose file
+x-networks: &base_networks
+   
+  
+  pangolin_net:
+    aliases:
+      - jellyfin
+      
+
+# The main Docker Compose file
+services:
+  jellyfin:
+    image: "jellyfin/jellyfin:latest"
+    container_name: "jellyfin"
+    user: 1000:1001
+    mem_limit: 4g
+    cpu_shares: 1024
+    security_opt:
+      - no-new-privileges:true    
+    environment:
+      TZ: "Europe/Berlin"
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8096' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+#    ports:
+#      - 8096:8096          
+    volumes:
+      - "/volume1/docker/jellyfin/config:/config:rw"
+      - "/volume1/docker/jellyfin/cache:/cache:rw"
+      - "/volume1/docker/jellyfin/logs:/logs:rw"
+      - "/volume2/media/video:/media:rw"
+      - "/volume2/media/music:/music:rw"
+    restart: on-failure:5
+    labels: *base_labels
+    networks: *base_networks
+
+
+
+
+networks:
+  # Access the pangolin-network
+  pangolin_net:
+    name: pangolin
+    external: true
