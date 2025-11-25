@@ -51,9 +51,10 @@ services:
     networks: *base_networks
 
   immich-folder-album-creator:
-    container_name: immichalbumcreator
     image: salvoxia/immich-folder-album-creator:latest
-    restart: unless-stopped
+    container_name: immichalbumcreator
+    user: 1029:100
+    restart: on-failure:5
     environment:
       API_URL: http://192.168.178.24:2283/api
       API_KEY: ${API_KEY_ENV}
