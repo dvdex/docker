@@ -63,7 +63,7 @@ services:
       - "/volume1/docker/backup:/srv/sftpgo/backup:rw"
       - "/volume1/docker/syncthing/data/minda/Notes:/srv/sftpgo/home/minda/Notes:rw"
       - "/volume1/docker/immich/upload:/srv/sftpgo/immich/upload:rw"
-      - "/volume1/video:/srv/sftpgo/video:rw"      
+      - "/volume1/video:/srv/video:rw"      
 
     labels: *base_labels
     networks: *base_networks          
