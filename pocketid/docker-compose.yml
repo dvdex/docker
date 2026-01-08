@@ -23,7 +23,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   pocketid:
-    image: "ghcr.io/pocket-id/pocket-id:v1"
+    image: "ghcr.io/pocket-id/pocket-id:v2"
     container_name: "pocketid"  
     restart: on-failure:10
     ports:
