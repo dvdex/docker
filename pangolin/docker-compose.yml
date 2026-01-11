@@ -29,7 +29,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   pangolin:
-    image: fosrl/pangolin:1.10.3
+    image: fosrl/pangolin:latest
     container_name: pangolin
     restart: unless-stopped
     volumes:
@@ -66,7 +66,7 @@ services:
     networks: *base_networks      
 
   traefik:
-    image: traefik:v3.5.6
+    image: traefik:v3.6
     container_name: traefik
     restart: unless-stopped
     network_mode: service:gerbil # Ports appear on the gerbil service    
