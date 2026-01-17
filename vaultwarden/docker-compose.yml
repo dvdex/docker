@@ -41,14 +41,21 @@ services:
 #      - "DATABASE_URL=${DATABASE_URL_ENV}"
       - "TZ=Europe/Zurich"
       - "INVITATION_ORG_NAME=home"
-      - "ADMIN_TOKEN=${ADMIN_TOKEN_ENV}"      
+      - "ADMIN_TOKEN=${ADMIN_TOKEN_ENV}"
       - "WEBSOCKET_ENABLED=True"
       - "SMTP_HOST=192.168.178.24"
       - "SMTP_FROM=vaultwarden@vaultwarden.zoonas.i234.me"
       - "SMTP_FROM_NAME=Vaultwarden"
       - "SMTP_SECURITY=off"
       - "SMTP_PORT=2500"
-      - "SMTP_AUTH_MECHANISM=Plain"      
+      - "SMTP_AUTH_MECHANISM=Plain"
+      - "SSO_ENABLED=true"
+      - "SSO_ONLY=false"
+      - "SSO_AUTHORITY=https://pocketid.zoonas.i234.me"
+      - "SSO_SCOPES=profile email openid"
+      - "SSO_PKCE=true"
+      - "SSO_CLIENT_ID=${SSO_CLIENT_ID_ENV}"
+      - "SSO_CLIENT_SECRET=${SSO_CLIENT_SECRET_ENV}"     
 
     labels: *base_labels
     networks: *base_networks
