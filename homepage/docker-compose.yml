@@ -13,6 +13,7 @@ x-labels: &base_labels
 # Reusable default networks configuration to ensure container is part of both
 # the pangolin network and the default network of this compose file
 x-networks: &base_networks
+  default:
    
   
   pangolin_net:
