@@ -13,6 +13,7 @@ x-labels: &base_labels
       autoheal: "true"
       homepage.group: "Media"
       homepage.description: "SFTP, HTTPS and WebDAV server"
+      
       homepage.icon: "sftpgo"
 
 # Reusable default networks configuration to ensure container is part of both
@@ -28,8 +29,8 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   sftpgo:
-    image: drakkan/sftpgo:v2.6.6
-    user: "1000:1001"
+    image: ghcr.io/drakkan/sftpgo:v2.6.6
+    user: "1000:989"
     container_name: "sftpgo"
     healthcheck:
       test: [ "CMD-SHELL", "echo `date` >> /tmp/health.txt" ]
@@ -68,7 +69,7 @@ services:
       SFTPGO_HTTPD__BINDINGS__0__OIDC__IMPLICIT_ROLES: true      
 
     volumes:
-      - "/volume2:/srv/sftpgo:rw"
+      - "/volume1/docker/sftpgo/data:/srv/sftpgo:rw"
       - "/volume1/docker/sftpgo/config:/etc/sftpgo:rw"
       - "/volume1/docker/backup:/srv/sftpgo/backup:rw"
 #     - "/volume1/docker/syncthing/data/transfer:/srv/sftpgo/transfer:rw"
