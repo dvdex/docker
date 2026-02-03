@@ -49,7 +49,7 @@ services:
 #      - 3550:3000
     environment:
       PUID: "1000"
-      PGID: "1001"
+      PGID: "989"
       HOMEPAGE_ALLOWED_HOSTS: "home.parkhomes.work"
     volumes:
       - "/volume1/docker/homepage/config:/app/config:rw"

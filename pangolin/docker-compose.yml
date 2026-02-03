@@ -29,7 +29,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   pangolin:
-    image: fosrl/pangolin:latest
+    image: ghcr.io/fosrl/pangolin:latest
     container_name: pangolin
     restart: unless-stopped
     volumes:
@@ -43,7 +43,7 @@ services:
     networks: *base_networks
 
   gerbil:
-    image: fosrl/gerbil:latest
+    image: ghcr.io/fosrl/gerbil:latest
     container_name: gerbil
     restart: unless-stopped
     depends_on:
@@ -66,14 +66,14 @@ services:
     networks: *base_networks      
 
   traefik:
-    image: traefik:v3.6
+    image: public.ecr.aws/docker/library/traefik:v3.6
     container_name: traefik
     restart: unless-stopped
     network_mode: service:gerbil # Ports appear on the gerbil service    
 
     environment:
       PUID: "1000"
-      PGID: "1001"
+      PGID: "989"
       TZ: "Europe/Berlin"
 
     depends_on:
