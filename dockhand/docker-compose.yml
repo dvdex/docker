@@ -10,7 +10,7 @@ x-labels: &base_labels
       homepage.name: "dockhand"
       homepage.href: "https://dockhand.kite-gila.work/"
       homepage.group: "Services"
-      homepage.description: "dockhand container manager"
+      homepage.description: "Docker container manager"
       homepage.icon: "dockhand"
 
 # Reusable default networks configuration to ensure container is part of both
