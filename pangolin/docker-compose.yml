@@ -11,9 +11,8 @@ x-labels: &base_labels
       homepage.href: "https://pangolin.kite-gila.work/"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
-      
       homepage.group: "Services"
-      
+      homepage.description: "Docker remote access platform"
       homepage.icon: "pangolin"
 
 # Reusable default networks configuration to ensure container is part of both
