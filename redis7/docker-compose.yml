@@ -1,0 +1,82 @@
+#
+# Ansible managed
+#
+
+# Labels for Traefik, Watchtower, and Autoheal
+#   (docker compose ignores fields that start with `x-`. So we can use them to
+#    define reusable fragments with `&anchors`. See:
+#    https://docs.docker.com/compose/compose-file/11-extension/ )
+x-labels: &base_labels
+      homepage.name: "redis-commander"
+      homepage.href: "https://redis-commander.kite-gila.work/"
+      com.centurylinklabs.watchtower.enable: "true"
+      autoheal: "true"
+      homepage.group: "Web"
+      homepage.description: "Redis commander web UI"
+      homepage.icon: "redis"
+
+# Reusable default networks configuration to ensure container is part of both
+# the pangolin network and the default network of this compose file
+x-networks: &base_networks
+   
+  
+  pangolin_net:
+    aliases:
+      - redis-commander
+      
+  db_net:
+    aliases:
+      - redis-commander
+
+# The main Docker Compose file
+services:
+  redis7:
+    image: redis:7
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass ${REDIS_PASSWORD_ENV}    
+    container_name: redis7
+    hostname: redis7
+    mem_limit: 512m
+    mem_reservation: 256m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: "1001:109"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
+    volumes:
+      - "/volume1/docker/redis7/data:/data:rw"
+    environment:
+      - TZ="Europe/Berlin"
+    restart: on-failure:5
+    networks: *base_networks    
+
+  redis-commander:
+    container_name: redis-commander
+    hostname: redis-commander
+    image: ghcr.io/joeferner/redis-commander:latest
+    restart: on-failure:5
+    environment:
+    - REDIS_HOST=redis7
+    - REDIS_PORT=6379
+    - REDIS_PASSWORD=${REDIS_PASSWORD_ENV}
+    - HTTP_USER=${HTTP_USER_ENV}
+    - HTTP_PASSWORD=${HTTP_PASSWORD_ENV}
+
+#    ports:
+#    - "8081:8081"
+    labels: *base_labels
+    networks: *base_networks
+
+networks:
+  # Access the pangolin-network
+  pangolin_net:
+    name: pangolin
+    external: true
+# Access the db-network
+  db_net:
+    name: db_network
+    external: true
