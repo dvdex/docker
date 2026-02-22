@@ -59,6 +59,8 @@ services:
 #      PAPERLESS_FILENAME_FORMAT: "{ created_year }/{ document_type }/{ correspondent }/{ title }"
       PAPERLESS_OCR_ROTATE_PAGES_THRESHOLD: 6
       PAPERLESS_TASK_WORKERS: 1
+      PAPERLESS_TASK_MAX_MEMORY: 2048
+      CELERY_WORKER_PREFETCH_MULTIPLIER: 1
       USERMAP_UID: "1000"
       USERMAP_GID: "1002"
       PAPERLESS_TIME_ZONE: "Europe/Berlin"
