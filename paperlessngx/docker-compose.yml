@@ -56,7 +56,7 @@ services:
       PAPERLESS_DBUSER: ${PAPERLESS_DBUSER_ENV}
       PAPERLESS_DBPASS: ${PAPERLESS_DBPASS_ENV}
       PAPERLESS_EMPTY_TRASH_DIR: ../trash
-      PAPERLESS_FILENAME_FORMAT: "{ created_year }/{ document_type }/{ correspondent }/{ title }"
+      PAPERLESS_FILENAME_FORMAT: "{{ created_year }}/{{ document_type }}/{{ correspondent }}/{{ title }}"
       PAPERLESS_OCR_ROTATE_PAGES_THRESHOLD: 6
       PAPERLESS_TASK_WORKERS: 1
       PAPERLESS_TASK_MAX_MEMORY: 2048
