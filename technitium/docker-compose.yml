@@ -7,8 +7,16 @@
 #    define reusable fragments with `&anchors`. See:
 #    https://docs.docker.com/compose/compose-file/11-extension/ )
 x-labels: &base_labels
+      traefik.enable: "true"
+      traefik.docker.network: "traefik_network"
+      traefik.http.services.technitium.loadbalancer.server.port: "80"
+      traefik.http.routers.technitium_web.EntryPoints: "web-secure"
+      traefik.http.routers.technitium_web.rule: "Host(`sqml01.rsint.net`)"
       homepage.name: "technitium"
       homepage.href: "https://sqml01.rsint.net/"
+      traefik.http.routers.technitium_web.service: "technitium"
+      traefik.http.routers.technitium_web.tls: true
+      traefik.http.routers.technitium_web.tls.certresolver: "default"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
       homepage.group: "Services"
@@ -16,12 +24,11 @@ x-labels: &base_labels
       homepage.icon: "technitium"
 
 # Reusable default networks configuration to ensure container is part of both
-# the pangolin network and the default network of this compose file
+# the traefik network and the default network of this compose file
 x-networks: &base_networks
   default:
-   
   
-  pangolin_net:
+  traefik_net:
     aliases:
       - technitium
       
@@ -82,7 +89,7 @@ services:
 
 
 networks:
-  # Access the pangolin-network
-  pangolin_net:
-    name: pangolin
+  # Access the traefik-network
+  traefik_net:
+    name: traefik_network
     external: true
