@@ -54,7 +54,7 @@ services:
       # - "443:443/udp" #DNS-over-HTTPS service (HTTP/3)
       # - "443:443/tcp" #DNS-over-HTTPS service (HTTP/1.1, HTTP/2)
       # - "80:80/tcp" #DNS-over-HTTP service (use with reverse proxy or certbot certificate renewal)
-      - "8053:8053/tcp" #DNS-over-HTTP service (use with reverse proxy)
+      # - "8053:8053/tcp" #DNS-over-HTTP service (use with reverse proxy)
       # - "67:67/udp" #DHCP service
     environment:
       - DNS_SERVER_DOMAIN=dns-server #The primary domain name used by this DNS Server to identify itself.
@@ -80,7 +80,6 @@ services:
       # - DNS_SERVER_FORWARDERS=1.1.1.1, 8.8.8.8 #Comma separated list of forwarder addresses.
       # - DNS_SERVER_FORWARDER_PROTOCOL=Tcp #Forwarder protocol options: Udp, Tcp, Tls, Https, HttpsJson.
       # - DNS_SERVER_LOG_USING_LOCAL_TIME=true #Enable this option to use local time instead of UTC for logging.
-  
     volumes:
       - "/volume1/docker/technitium/config:/etc/dns"
 
