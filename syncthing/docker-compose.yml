@@ -63,3 +63,8 @@ services:
     networks: *base_networks
 
 
+networks:
+  # Access the traefik-network
+  traefik_net:
+    name: traefik_network
+    external: true
