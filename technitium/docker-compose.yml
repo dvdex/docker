@@ -26,7 +26,6 @@ x-labels: &base_labels
 # Reusable default networks configuration to ensure container is part of both
 # the traefik network and the default network of this compose file
 x-networks: &base_networks
-  default:
   
   traefik_net:
     aliases:
@@ -81,8 +80,7 @@ services:
       # - DNS_SERVER_FORWARDERS=1.1.1.1, 8.8.8.8 #Comma separated list of forwarder addresses.
       # - DNS_SERVER_FORWARDER_PROTOCOL=Tcp #Forwarder protocol options: Udp, Tcp, Tls, Https, HttpsJson.
       # - DNS_SERVER_LOG_USING_LOCAL_TIME=true #Enable this option to use local time instead of UTC for logging.
-      - http_proxy="http://proxy.ssn.mu.rsint.net:9480"
-      - https_proxy="http://proxy.ssn.mu.rsint.net:9480"    
+  
     volumes:
       - "/volume1/docker/technitium/config:/etc/dns"
 
