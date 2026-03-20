@@ -33,7 +33,7 @@ services:
   paperlessngx:
     image: ghcr.io/paperless-ngx/paperless-ngx:latest
     container_name: "paperlessngx"
-    mem_limit: 10G
+    mem_limit: 16G
     cpu_shares: 1024
     security_opt:
       - no-new-privileges:true
