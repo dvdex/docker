@@ -74,7 +74,7 @@ services:
     environment:
       PUID: "1000"
       PGID: "989"
-      TZ: "Europe/Berlin"
+      TZ: "Asia/Singapore"
 
     depends_on:
       pangolin:
