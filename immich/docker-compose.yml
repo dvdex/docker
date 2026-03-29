@@ -41,8 +41,7 @@ services:
     image: ghcr.io/immich-app/immich-machine-learning:v2
     container_name: immichml
     user: 1029:100
-    security_opt:
-      - no-new-privileges:true
+
     env_file:
       - immich.env
     volumes:
