@@ -72,6 +72,7 @@ services:
       PAPERLESS_SOCIALACCOUNT_PROVIDERS: ${PAPERLESS_SOCIALACCOUNT_PROVIDERS_ENV}
       PAPERLESS_OCR_LANGUAGE: deu+eng
       PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
+      PAPERLESS_CLASSIFIER_TRAIN_SCHEDULE: '' # disable clasifier training task
     restart: on-failure:5
     labels: *base_labels
     networks: *base_networks
