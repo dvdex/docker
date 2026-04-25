@@ -32,7 +32,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   linkwarden:
-    image: ghcr.io/linkwarden/linkwarden:latest
+    image: ghcr.io/linkwarden/linkwarden:v2.13.5
     container_name: "linkwarden"
 #    user: "1000:1002"
     healthcheck:
