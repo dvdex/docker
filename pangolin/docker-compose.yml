@@ -28,7 +28,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   pangolin:
-    image: fosrl/pangolin:latest
+    image: fosrl/pangolin:ee-latest
     container_name: pangolin
     restart: unless-stopped
     volumes:
