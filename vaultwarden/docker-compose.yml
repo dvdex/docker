@@ -40,6 +40,7 @@ services:
       - "DOMAIN=https://vaultwarden.zoonas.i234.me"
 #      - "DATABASE_URL=${DATABASE_URL_ENV}"
       - "TZ=Europe/Zurich"
+      - "SIGNUPS_ALLOWED=false"
       - "INVITATION_ORG_NAME=home"
       - "ADMIN_TOKEN=${ADMIN_TOKEN_ENV}"
       - "WEBSOCKET_ENABLED=True"
