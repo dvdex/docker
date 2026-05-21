@@ -1,0 +1,21 @@
+---
+# For configuration options and examples, please see:
+# https://gethomepage.dev/configs/bookmarks
+
+- Storage:
+    - zoonas:
+        - abbr: SP
+          icon: synology-dsm
+          href: https://zoonas.i234.me/
+
+- Deploy:
+    - home.kite-gila:
+        - abbr: KG
+          icon: homepage
+          href: https://home.kite-gila.work/
+
+- Security:
+    - vaultwarden:
+        - abbr: VW
+          icon: bitwarden
+          href: https://vaultwarden.zoonas.i234.me/
