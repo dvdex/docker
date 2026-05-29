@@ -32,7 +32,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   linkwarden:
-    image: ghcr.io/linkwarden/linkwarden:v2.9.3
+    image: ghcr.io/linkwarden/linkwarden:latest
     container_name: "linkwarden"
 #    user: "1001:989"
     healthcheck:
@@ -61,7 +61,8 @@ services:
 #      STORAGE_FOLDER: 
 #      AUTOSCROLL_TIMEOUT: 
       - NEXT_PUBLIC_DISABLE_REGISTRATION=true #or false
-    restart: on-failure:5
+      - "NEXT_PUBLIC_USER_CONTENT_DOMAIN=https://usercontent.parkhomes.ch"
+    restart: on-failure:5"
     labels: *base_labels
     networks: *base_networks
 
