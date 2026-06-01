@@ -8,14 +8,7 @@
 #    https://docs.docker.com/compose/compose-file/11-extension/ )
 x-labels: &base_labels
       homepage.name: "inbucket"
-      homepage.href: "https://webmail.parkhomes.ch/"
-      pangolin.public-resources.inbucket.name: inbucket
-      pangolin.public-resources.inbucket.full-domain: webmail.parkhomes.ch
-      pangolin.public-resources.inbucket.protocol: http
-      pangolin.public-resources.inbucket.targets[0].method: http
-      pangolin.public-resources.inbucket.targets[0].hostname: inbucket
-      pangolin.public-resources.inbucket.targets[0].port: 9000
-      pangolin.public-resources.inbucket.auth.sso-enabled: true
+      homepage.href: "https://webmail.parkhomes.work/"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
       
@@ -32,6 +25,9 @@ x-networks: &base_networks
     aliases:
       - inbucket
       
+  nextcloud-aio:
+    aliases:
+      - inbucket
 
 # The main Docker Compose file
 services:
@@ -43,10 +39,10 @@ services:
       - "1100"    
     restart: unless-stopped
     volumes:
-      - "/opt/hawser-stacks/inbucket/config:/config"
-      - "/opt/hawser-stacks/inbucket/storage:/storage"
+      - "/volume1/docker/inbucket/config:/config"
+      - "/volume1/docker/inbucket/storage:/storage"
     environment:
-      - "INBUCKET_WEB_BASEPATH=webmail.parkhomes.ch"
+      - "INBUCKET_WEB_BASEPATH=webmail.parkhomes.work"
     labels: *base_labels
     networks: *base_networks
 
@@ -56,4 +52,8 @@ networks:
   # Access the pangolin-network
   pangolin_net:
     name: pangolin
+    external: true
+# Access the db-network
+  nextcloud-aio:
+    name: nextcloud-aio
     external: true
