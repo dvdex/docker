@@ -69,6 +69,28 @@ services:
       ]      
     networks: *base_networks
 
+  postgres18:
+    container_name: postgres18
+    user: "1000:1002"
+    image: postgres:18
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "postgres", "-U", "basync"]
+      timeout: 45s
+      interval: 10s
+      retries: 10
+    restart: on-failure:5
+    volumes:
+      - "/volume1/docker/postgres16/config/init.sql:/docker-entrypoint-initdb.d/init.sql"
+      - "/volume1/docker/postgres16/postgresql:/var/lib/postgresql:rw"
+    environment:
+      - "TZ=Europe/Berlin"
+      - "POSTGRES_USER=${POSTGRES_USER_ENV}"
+      - "POSTGRES_PASSWORD=${POSTGRES_PASSWORD_ENV}"   
+    networks: *base_networks
   pgadmin16:
     image: "dpage/pgadmin4:latest"
     container_name: "pgadmin16"
