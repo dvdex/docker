@@ -22,7 +22,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   paperlessngx:
-    image: ghcr.io/paperless-ngx/paperless-ngx:2.20.15
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.0.3
     container_name: "paperlessngx"
     mem_limit: 6g
     cpu_shares: 1024
@@ -55,6 +55,7 @@ services:
       USERMAP_UID: "1029"
       USERMAP_GID: "100"
       PAPERLESS_TIME_ZONE: "Europe/Zurich"
+      PAPERLESS_SECRET_KEY: ${PAPERLESS_SECRET_KEY_ENV}
       PAPERLESS_URL: "https://paperless.zoonas.i234.me"
       PAPERLESS_CSRF_TRUSTED_ORIGINS: "https://paperless.zoonas.i234.me"
       PAPERLESS_ADMIN_USER: ${PAPERLESS_ADMIN_USER_ENV}
