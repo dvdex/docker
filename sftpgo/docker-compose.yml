@@ -76,10 +76,10 @@ services:
       SFTPGO_HTTPD__BINDINGS__0__OIDC__IMPLICIT_ROLES: true      
 
     volumes:
-      - "/volume1/docker/sftpgo/data:/srv/sftpgo:rw"
+      - "/opt/hawser-stacks/sftpgo/data:/srv/sftpgo:rw"
       - "/opt/hawser-stacks/sftpgo/config:/etc/sftpgo:rw"
       - "/opt/hawser-stacks/backup:/srv/sftpgo/backup:rw"
-#     - "/volume1/docker/syncthing/data/transfer:/srv/sftpgo/transfer:rw"
+#     - "/opt/hawser-stacks/syncthing/data/transfer:/srv/sftpgo/transfer:rw"
 
     labels:
       << : *base_labels
