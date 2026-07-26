@@ -1,0 +1,74 @@
+#
+# Ansible managed
+#
+
+# Labels for Traefik, Watchtower, and Autoheal
+#   (docker compose ignores fields that start with `x-`. So we can use them to
+#    define reusable fragments with `&anchors`. See:
+#    https://docs.docker.com/compose/compose-file/11-extension/ )
+x-labels: &base_labels
+      homepage.name: "grafana"
+      homepage.href: "https://grafana.parkhomes.ch/"
+      pangolin.public-resources.grafana.name: grafana
+      pangolin.public-resources.grafana.full-domain: grafana.parkhomes.ch
+      pangolin.public-resources.grafana.protocol: http
+      pangolin.public-resources.grafana.targets[0].method: http
+      pangolin.public-resources.grafana.targets[0].hostname: grafana
+      pangolin.public-resources.grafana.targets[0].port: 3000
+      pangolin.public-resources.grafana.auth.sso-enabled: true
+      com.centurylinklabs.watchtower.enable: "true"
+      autoheal: "true"
+      homepage.group: "Services"
+      homepage.description: "Grafana for TeslaMate"
+      homepage.icon: "grafana"
+
+# Reusable default networks configuration to ensure container is part of both
+# the pangolin network and the default network of this compose file
+x-networks: &base_networks
+   
+  
+  pangolin_net:
+    aliases:
+      - grafana
+      
+  db_net:
+    aliases:
+      - grafana
+
+# The main Docker Compose file
+services:
+  grafana:
+    image: "teslamate/grafana:latest"
+    container_name: "grafana"
+    restart: on-failure:5
+    user: 1001:989    
+    environment:
+      - TZ=Europe/Zurich
+      - DATABASE_USER=${TM_DB_USER}
+      - DATABASE_PASS=${TM_DB_PASS}
+      - DATABASE_NAME=${TM_DB_NAME}
+      - DATABASE_HOST=postgres16
+      - GRAFANA_PASSWD=${GRAFANA_PW}
+      - GF_SECURITY_ADMIN_USER=${GRAFANA_USER}
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PW}
+      - GF_AUTH_ANONYMOUS_ENABLED=false
+      - GF_SERVER_DOMAIN=grafana.parkhomes.ch
+      - GF_SERVER_ROOT_URL=https://grafana.parkhomes.ch/
+      - GF_AUTH_OAUTH_ALLOW_INSECURE_EMAIL_LOOKUP=true
+#      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+
+    volumes:
+      - "/opt/hawser-stacks/grafana/grafana-data:/var/lib/grafana:rw"
+    labels: *base_labels
+    networks: *base_networks
+
+
+networks:
+  # Access the pangolin-network
+  pangolin_net:
+    name: pangolin
+    external: true
+# Access the db-network
+  db_net:
+    name: db_network
+    external: true
