@@ -22,7 +22,7 @@ x-networks: &base_networks
 # The main Docker Compose file
 services:
   paperlessngx:
-    image: ghcr.io/paperless-ngx/paperless-ngx:3.0.4
+    image: ghcr.io/paperless-ngx/paperless-ngx:3.0.5
     container_name: "paperlessngx"
     mem_limit: 6g
     cpu_shares: 1024
