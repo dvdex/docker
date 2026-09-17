@@ -1,0 +1,24 @@
+services:
+  any-sync-bundle:
+    image: ghcr.io/grishy/any-sync-bundle:${ANYSYNC_TAG}
+    container_name: any-sync-bundle-aio
+    restart: unless-stopped
+    ports:
+      - "${ANYSYNC_TCP_PORT:-33010}:33010"
+      - "${ANYSYNC_UDP_PORT:-33020}:33020/udp"
+    volumes:
+      - "${DATA_ROOT}/anysync/data:/data"
+    environment:
+      ANY_SYNC_BUNDLE_INIT_EXTERNAL_ADDRS: ${ANYSYNC_EXTERNAL_ADDR}
+      ANY_SYNC_BUNDLE_LISTEN_ADDR: 0.0.0.0
+      ANY_SYNC_BUNDLE_INIT_FILENODE_DEFAULT_LIMIT: ${ANYSYNC_SPACE_LIMIT_BYTES:-10737418240}
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    networks:
+      - pangolin
+
+networks:
+  pangolin:
+    name: pangolin
+    external: true

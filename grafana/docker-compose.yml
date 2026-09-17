@@ -1,0 +1,44 @@
+services:
+  grafana:
+    image: teslamate/grafana:${GRAFANA_TAG}
+    container_name: grafana
+    restart: on-failure:5
+    user: "${PUID}:${PGID}"
+    environment:
+      TZ: ${TZ}
+      DATABASE_USER: ${TM_DB_USER}
+      DATABASE_PASS: ${TM_DB_PASS}
+      DATABASE_NAME: ${TM_DB_NAME:-teslamate}
+      DATABASE_HOST: postgres16
+      GRAFANA_PASSWD: ${GRAFANA_PASSWORD}
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD}
+      GF_AUTH_ANONYMOUS_ENABLED: "false"
+      GF_SERVER_DOMAIN: ${GRAFANA_DOMAIN}
+      GF_SERVER_ROOT_URL: "https://${GRAFANA_DOMAIN}/"
+      GF_AUTH_OAUTH_ALLOW_INSECURE_EMAIL_LOOKUP: "true"
+    volumes:
+      - "${DATA_ROOT}/grafana/grafana-data:/var/lib/grafana:rw"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-grafana.name=Grafana"
+      - "pangolin.public-resources.${SITE_ID}-grafana.full-domain=${GRAFANA_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-grafana.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-grafana.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-grafana.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-grafana.targets[0].port=3000"
+      - "homepage.name=Grafana"
+      - "homepage.href=https://${GRAFANA_DOMAIN}/"
+      - "homepage.group=Services"
+      - "homepage.description=Grafana for TeslaMate"
+      - "homepage.icon=grafana"
+    networks:
+      - db_net
+      - pangolin
+
+networks:
+  db_net:
+    name: db_network
+    external: true
+  pangolin:
+    name: pangolin
+    external: true

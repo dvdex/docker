@@ -1,0 +1,58 @@
+services:
+  linkwarden:
+    image: ghcr.io/linkwarden/linkwarden:${LINKWARDEN_TAG}
+    container_name: linkwarden
+    restart: on-failure:5
+    healthcheck:
+      test: ["CMD-SHELL", "timeout 10s bash -c ':> /dev/tcp/127.0.0.1/3000' || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    mem_limit: 2g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - "${DATA_ROOT}/linkwarden/data:/data/data:rw"
+    environment:
+      TZ: ${TZ}
+      DATABASE_URL: ${LINKWARDEN_DATABASE_URL}
+      NEXTAUTH_SECRET: ${LINKWARDEN_NEXTAUTH_SECRET}
+      NEXTAUTH_URL: "https://${LINKWARDEN_DOMAIN}/api/v1/auth"
+      NEXT_PUBLIC_KEYCLOAK_ENABLED: "true"
+      KEYCLOAK_CUSTOM_NAME: Pocket ID
+      KEYCLOAK_ISSUER: ${OIDC_ISSUER}
+      KEYCLOAK_CLIENT_ID: ${LINKWARDEN_OIDC_CLIENT_ID}
+      KEYCLOAK_CLIENT_SECRET: ${LINKWARDEN_OIDC_CLIENT_SECRET}
+      NEXT_PUBLIC_DISABLE_REGISTRATION: ${LINKWARDEN_DISABLE_REGISTRATION:-true}
+      NEXT_PUBLIC_USER_CONTENT_DOMAIN: "https://${LINKWARDEN_USER_CONTENT_DOMAIN}"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-linkwarden.name=Linkwarden"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden.full-domain=${LINKWARDEN_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden.targets[0].port=3000"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden-content.name=Linkwarden User Content"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden-content.full-domain=${LINKWARDEN_USER_CONTENT_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden-content.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden-content.auth.sso-enabled=false"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden-content.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-linkwarden-content.targets[0].port=3000"
+      - "homepage.name=Linkwarden"
+      - "homepage.href=https://${LINKWARDEN_DOMAIN}/"
+      - "homepage.group=Media"
+      - "homepage.description=Collaborative bookmark manager"
+      - "homepage.icon=linkwarden"
+    networks:
+      - db_net
+      - pangolin
+
+networks:
+  db_net:
+    name: db_network
+    external: true
+  pangolin:
+    name: pangolin
+    external: true

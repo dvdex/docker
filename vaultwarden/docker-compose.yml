@@ -1,0 +1,52 @@
+services:
+  vaultwarden:
+    image: vaultwarden/server:${VAULTWARDEN_TAG:-1.35.4}
+    container_name: vaultwarden
+    user: "${PUID}:${PGID}"
+    mem_limit: 512m
+    mem_reservation: 256m
+    cpu_shares: 1024
+    security_opt:
+      - no-new-privileges:true
+    restart: on-failure:5
+    volumes:
+      - "${DATA_ROOT}/vaultwarden:/data:rw"
+    environment:
+      TZ: ${TZ}
+      ROCKET_PORT: 4020
+      DOMAIN: "https://${VAULTWARDEN_DOMAIN}"
+      INVITATION_ORG_NAME: ${VAULTWARDEN_ORG_NAME:-home}
+      WEBSOCKET_ENABLED: "true"
+      ADMIN_TOKEN: ${VAULTWARDEN_ADMIN_TOKEN}
+      SMTP_HOST: ${SMTP_HOST}
+      SMTP_PORT: ${SMTP_PORT:-2500}
+      SMTP_SECURITY: "off"
+      SMTP_FROM: "vaultwarden@${VAULTWARDEN_DOMAIN}"
+      SMTP_FROM_NAME: Vaultwarden
+      SMTP_AUTH_MECHANISM: Plain
+      SSO_ENABLED: "true"
+      SSO_ONLY: "false"
+      SSO_AUTHORITY: ${OIDC_ISSUER}
+      SSO_SCOPES: profile email openid
+      SSO_PKCE: "true"
+      SSO_CLIENT_ID: ${VAULTWARDEN_SSO_CLIENT_ID}
+      SSO_CLIENT_SECRET: ${VAULTWARDEN_SSO_CLIENT_SECRET}
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-vaultwarden.name=Vaultwarden"
+      - "pangolin.public-resources.${SITE_ID}-vaultwarden.full-domain=${VAULTWARDEN_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-vaultwarden.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-vaultwarden.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-vaultwarden.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-vaultwarden.targets[0].port=4020"
+      - "homepage.name=Vaultwarden"
+      - "homepage.href=https://${VAULTWARDEN_DOMAIN}/"
+      - "homepage.group=Web"
+      - "homepage.description=Bitwarden community driven password safe"
+      - "homepage.icon=bitwarden"
+    networks:
+      - pangolin
+
+networks:
+  pangolin:
+    name: pangolin
+    external: true

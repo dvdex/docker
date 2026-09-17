@@ -1,0 +1,73 @@
+services:
+  postgres16:
+    image: ghcr.io/immich-app/postgres:${POSTGRES_TAG:-16-vectorchord0.3.0}
+    container_name: postgres16
+    user: "${PUID}:${PGID}"
+    mem_limit: 1g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    restart: on-failure:5
+    # A healthcheck needs the real superuser name, which is a site secret, so it
+    # stays disabled. Keep depends_on without a condition while it is disabled.
+    # healthcheck:
+    #   test: ["CMD-SHELL", "pg_isready -q -d postgres -U $$POSTGRES_USER"]
+    #   timeout: 45s
+    #   interval: 10s
+    #   retries: 10
+    volumes:
+      - "./config/init.sql:/docker-entrypoint-initdb.d/init.sql:ro"
+      - "${DATA_ROOT}/postgres16/data:/var/lib/postgresql/data:rw"
+    environment:
+      TZ: ${TZ}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      DB_STORAGE_TYPE: ${POSTGRES_DB_STORAGE_TYPE:-HDD}
+    networks:
+      - db_net
+
+  pgadmin16:
+    image: dpage/pgadmin4:${PGADMIN_TAG:-latest}
+    container_name: pgadmin16
+    user: "${PUID}:${PGID}"
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      - postgres16
+    healthcheck:
+      test: ["CMD", "wget", "-O", "-", "http://localhost:80/misc/ping"]
+      interval: 300s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    volumes:
+      - "${DATA_ROOT}/postgres16/pgadmin-data:/var/lib/pgadmin:rw"
+      - "${DATA_ROOT}/postgres16/log:/var/log:rw"
+    environment:
+      TZ: ${TZ}
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-pgadmin.name=pgAdmin"
+      - "pangolin.public-resources.${SITE_ID}-pgadmin.full-domain=${PGADMIN_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-pgadmin.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-pgadmin.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-pgadmin.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-pgadmin.targets[0].port=80"
+      - "homepage.name=pgAdmin"
+      - "homepage.href=https://${PGADMIN_DOMAIN}/"
+      - "homepage.group=Web"
+      - "homepage.description=Postgres administration web UI"
+      - "homepage.icon=postgres"
+    networks:
+      - db_net
+      - pangolin
+
+networks:
+  db_net:
+    name: db_network
+    external: true
+  pangolin:
+    name: pangolin
+    external: true

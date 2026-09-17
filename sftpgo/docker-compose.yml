@@ -1,0 +1,77 @@
+services:
+  sftpgo:
+    image: drakkan/sftpgo:${SFTPGO_TAG:-v2.6.6}
+    container_name: sftpgo
+    user: "${PUID}:${PGID}"
+    restart: on-failure:10
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD-SHELL", "echo `date` >> /tmp/health.txt"]
+      interval: 300s
+      timeout: 5s
+      retries: 3
+      start_period: 100s
+    ports:
+      # SFTP is a raw TCP service and stays published on the host.
+      - "${SFTPGO_SFTP_PORT:-2022}:2022"
+    environment:
+      TZ: ${TZ}
+      SFTPGO_CONFIG_DIR: /etc/sftpgo/
+      SFTPGO_DATA_PROVIDER__BACKUPS_PATH: /srv/sftpgo/backup/sftpgo/
+      SFTPGO_HTTPD__BINDINGS__0__PORT: 8080
+      SFTPGO_WEBDAVD__BINDINGS__0__PORT: 5007
+      SFTPGO_DEFAULT_ADMIN_USERNAME: ${SFTPGO_DEFAULT_ADMIN_USERNAME}
+      SFTPGO_DEFAULT_ADMIN_PASSWORD: ${SFTPGO_DEFAULT_ADMIN_PASSWORD}
+      SFTPGO_COMMON__UPLOAD_MODE: 2
+      SFTPGO_COMMON__DEFENDER__ENABLED: "true"
+      SFTPGO_COMMON__DEFENDER__BAN_TIME: 15
+      SFTPGO_COMMON__DEFENDER__BAN_TIME_INCREMENT: 100
+      SFTPGO_COMMON__DEFENDER__THRESHOLD: 5
+      SFTPGO_COMMON__DEFENDER__OBSERVATION_TIME: 15
+      SFTPGO_SFTPD__ENABLED_SSH_COMMANDS: '*'
+      SFTPGO_LOG_LEVEL: info
+      SFTPGO_SMTP__HOST: ${SMTP_HOST}
+      SFTPGO_SMTP__PORT: ${SMTP_PORT:-2500}
+      SFTPGO_SMTP__FROM: "sftpgo@${SFTPGO_DOMAIN}"
+      SFTPGO_SMTP__ENCRYPTION: 0
+      SFTPGO_SMTP__AUTH_TYPE: 0
+      SFTPGO_HTTPD__BINDINGS__0__OIDC__CONFIG_URL: ${OIDC_ISSUER}
+      SFTPGO_HTTPD__BINDINGS__0__OIDC__REDIRECT_BASE_URL: "https://${SFTPGO_DOMAIN}"
+      SFTPGO_HTTPD__BINDINGS__0__OIDC__CLIENT_ID: ${SFTPGO_OIDC_CLIENT_ID}
+      SFTPGO_HTTPD__BINDINGS__0__OIDC__CLIENT_SECRET: ${SFTPGO_OIDC_CLIENT_SECRET}
+      SFTPGO_HTTPD__BINDINGS__0__OIDC__USERNAME_FIELD: preferred_username
+      SFTPGO_HTTPD__BINDINGS__0__OIDC__ROLE_FIELD: sftpgo_role
+      SFTPGO_HTTPD__BINDINGS__0__OIDC__IMPLICIT_ROLES: "true"
+    volumes:
+      - "${DATA_ROOT}/sftpgo/data:/srv/sftpgo:rw"
+      - "${DATA_ROOT}/sftpgo/config:/etc/sftpgo:rw"
+      - "${SFTPGO_BACKUP_PATH}:/srv/sftpgo/backup:rw"
+      - "${SFTPGO_NOTES_PATH}:${SFTPGO_NOTES_TARGET}:rw"
+      - "${SFTPGO_IMMICH_UPLOAD_PATH}:/srv/sftpgo/immich/upload:rw"
+      - "${SFTPGO_VIDEO_PATH}:/srv/sftpgo/video:rw"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-sftpgo.name=SFTPGo"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo.full-domain=${SFTPGO_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo.targets[0].port=8080"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo-webdav.name=SFTPGo WebDAV"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo-webdav.full-domain=${SFTPGO_WEBDAV_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo-webdav.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo-webdav.auth.sso-enabled=false"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo-webdav.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-sftpgo-webdav.targets[0].port=5007"
+      - "homepage.name=SFTPGo"
+      - "homepage.href=https://${SFTPGO_DOMAIN}/"
+      - "homepage.group=Media"
+      - "homepage.description=SFTP, HTTPS and WebDAV server"
+      - "homepage.icon=sftpgo"
+    networks:
+      - pangolin
+
+networks:
+  pangolin:
+    name: pangolin
+    external: true

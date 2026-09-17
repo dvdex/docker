@@ -1,0 +1,56 @@
+services:
+  freshrss:
+    image: ghcr.io/linuxserver/freshrss:${FRESHRSS_TAG:-1.28.1}
+    container_name: freshrss
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "--max-time", "2", "http://localhost:80"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    logging:
+      options:
+        max-size: 10m
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      CRON_MIN: ${FRESHRSS_CRON_MIN:-3,33}
+      BASE_URL: "https://${FRESHRSS_DOMAIN}"
+      SERVER_DNS: ${FRESHRSS_DOMAIN}
+      TRUSTED_PROXY: ${FRESHRSS_TRUSTED_PROXY:-100.64.0.0/10}
+      ADMIN_EMAIL: ${FRESHRSS_ADMIN_EMAIL}
+      ADMIN_PASSWORD: ${FRESHRSS_ADMIN_PASSWORD}
+      ADMIN_API_PASSWORD: ${FRESHRSS_ADMIN_API_PASSWORD}
+      DB_HOST: postgres16:5432
+      DB_BASE: ${FRESHRSS_DB_NAME:-freshrss}
+      DB_USER: ${FRESHRSS_DB_USER}
+      DB_PASSWORD: ${FRESHRSS_DB_PASSWORD}
+    volumes:
+      - "${DATA_ROOT}/freshrss/config:/config:rw"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-freshrss.name=FreshRSS"
+      - "pangolin.public-resources.${SITE_ID}-freshrss.full-domain=${FRESHRSS_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-freshrss.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-freshrss.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-freshrss.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-freshrss.targets[0].port=80"
+      - "homepage.name=FreshRSS"
+      - "homepage.href=https://${FRESHRSS_DOMAIN}/"
+      - "homepage.group=Services"
+      - "homepage.description=RSS feed aggregator"
+      - "homepage.icon=freshrss"
+    networks:
+      - db_net
+      - pangolin
+
+networks:
+  db_net:
+    name: db_network
+    external: true
+  pangolin:
+    name: pangolin
+    external: true

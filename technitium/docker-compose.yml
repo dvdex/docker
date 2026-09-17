@@ -1,0 +1,38 @@
+services:
+  technitium:
+    image: technitium/dns-server:${TECHNITIUM_TAG:-latest}
+    container_name: technitium
+    hostname: ${TECHNITIUM_HOSTNAME:-dns-server}
+    restart: unless-stopped
+    sysctls:
+      - net.ipv4.ip_local_port_range=1024 65535
+    ports:
+      - "${DNS_PORT:-53}:53/udp"
+      - "${DNS_PORT:-53}:53/tcp"
+      - "${DNS_TLS_PORT:-853}:853/udp"
+      - "${DNS_TLS_PORT:-853}:853/tcp"
+    environment:
+      DNS_SERVER_DOMAIN: ${TECHNITIUM_HOSTNAME:-dns-server}
+      DNS_SERVER_ADMIN_PASSWORD: ${DNS_SERVER_ADMIN_PASSWORD}
+      DNS_SERVER_LOG_USING_LOCAL_TIME: "true"
+    volumes:
+      - "${DATA_ROOT}/technitium/config:/etc/dns"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-technitium.name=Technitium DNS"
+      - "pangolin.public-resources.${SITE_ID}-technitium.full-domain=${TECHNITIUM_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-technitium.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-technitium.auth.sso-enabled=true"
+      - "pangolin.public-resources.${SITE_ID}-technitium.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-technitium.targets[0].port=5380"
+      - "homepage.name=Technitium DNS"
+      - "homepage.href=https://${TECHNITIUM_DOMAIN}/"
+      - "homepage.group=Services"
+      - "homepage.description=DNS resolver and authoritative server"
+      - "homepage.icon=technitium"
+    networks:
+      - pangolin
+
+networks:
+  pangolin:
+    name: pangolin
+    external: true

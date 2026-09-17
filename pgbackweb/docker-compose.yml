@@ -1,0 +1,43 @@
+services:
+  pgbackweb:
+    image: eduardolat/pgbackweb:${PGBACKWEB_TAG:-latest}
+    container_name: pgbackweb
+    user: "${PUID}:${PGID}"
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8085' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    environment:
+      TZ: ${TZ}
+      PBW_ENCRYPTION_KEY: ${PBW_ENCRYPTION_KEY}
+      PBW_POSTGRES_CONN_STRING: ${PBW_POSTGRES_CONN_STRING}
+    volumes:
+      - "${PGBACKWEB_BACKUP_PATH}:/backups:rw"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-pgbackweb.name=PG Back Web"
+      - "pangolin.public-resources.${SITE_ID}-pgbackweb.full-domain=${PGBACKWEB_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-pgbackweb.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-pgbackweb.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-pgbackweb.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-pgbackweb.targets[0].port=8085"
+      - "homepage.name=PG Back Web"
+      - "homepage.href=https://${PGBACKWEB_DOMAIN}/"
+      - "homepage.group=Web"
+      - "homepage.description=Postgres backup web UI"
+      - "homepage.icon=urbackup"
+    networks:
+      - db_net
+      - pangolin
+
+networks:
+  db_net:
+    name: db_network
+    external: true
+  pangolin:
+    name: pangolin
+    external: true

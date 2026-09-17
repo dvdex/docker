@@ -1,0 +1,41 @@
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:${JELLYFIN_TAG:-latest}
+    container_name: jellyfin
+    restart: on-failure:5
+    user: "${PUID}:${PGID}"
+    mem_limit: 4g
+    cpu_shares: 1024
+    healthcheck:
+      test: timeout 10s bash -c ':> /dev/tcp/127.0.0.1/8096' || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 90s
+    environment:
+      TZ: ${TZ}
+      JELLYFIN_PublishedServerUrl: "https://${JELLYFIN_DOMAIN}"
+    volumes:
+      - "${DATA_ROOT}/jellyfin/config:/config:rw"
+      - "${DATA_ROOT}/jellyfin/cache:/cache:rw"
+      - "${DATA_ROOT}/jellyfin/logs:/logs:rw"
+      - "${JELLYFIN_MEDIA_PATH}:/media:rw"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-jellyfin.name=Jellyfin"
+      - "pangolin.public-resources.${SITE_ID}-jellyfin.full-domain=${JELLYFIN_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-jellyfin.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-jellyfin.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-jellyfin.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-jellyfin.targets[0].port=8096"
+      - "homepage.name=Jellyfin"
+      - "homepage.href=https://${JELLYFIN_DOMAIN}/"
+      - "homepage.group=Media"
+      - "homepage.description=Jellyfin media server"
+      - "homepage.icon=jellyfin"
+    networks:
+      - pangolin
+
+networks:
+  pangolin:
+    name: pangolin
+    external: true

@@ -1,0 +1,18 @@
+# Dockhand environment files can contain credentials.
+**/.env
+**/.env.*
+!**/.env.example
+
+# Runtime state must never be committed.
+**/data/
+**/cache/
+**/logs/
+**/storage/
+**/upload/
+**/library/
+**/postgres/
+**/pgadmin-data/
+**/acme.json
+
+# Keep explicit placeholders when a runtime directory is documented.
+!**/.gitkeep

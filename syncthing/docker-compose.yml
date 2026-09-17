@@ -1,0 +1,42 @@
+services:
+  syncthing:
+    image: ghcr.io/linuxserver/syncthing:${SYNCTHING_TAG:-latest}
+    container_name: syncthing
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: curl -fkLsS -m 2 127.0.0.1:8384/rest/noauth/health | grep -o --color=never OK || exit 1
+      interval: 1m
+      timeout: 10s
+      retries: 3
+    ports:
+      - "${SYNCTHING_SYNC_PORT:-22000}:22000/tcp"
+      - "${SYNCTHING_SYNC_PORT:-22000}:22000/udp"
+      - "${SYNCTHING_DISCOVERY_PORT:-21027}:21027/udp"
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+    volumes:
+      - "${DATA_ROOT}/syncthing/config:/config:rw"
+      - "${SYNCTHING_DATA_PATH}:/data:rw"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-syncthing.name=Syncthing"
+      - "pangolin.public-resources.${SITE_ID}-syncthing.full-domain=${SYNCTHING_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-syncthing.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-syncthing.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-syncthing.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-syncthing.targets[0].port=8384"
+      - "homepage.name=Syncthing"
+      - "homepage.href=https://${SYNCTHING_DOMAIN}/"
+      - "homepage.group=Services"
+      - "homepage.description=Continuous file synchronization"
+      - "homepage.icon=syncthing"
+    networks:
+      - pangolin
+
+networks:
+  pangolin:
+    name: pangolin
+    external: true

@@ -1,0 +1,38 @@
+services:
+  backrest:
+    image: garethgeorge/backrest:${BACKREST_TAG:-latest}
+    container_name: backrest
+    restart: unless-stopped
+    security_opt:
+      - no-new-privileges:true
+    environment:
+      TZ: ${TZ}
+      BACKREST_DATA: /data
+      BACKREST_CONFIG: /config/config.json
+      XDG_CACHE_HOME: /cache
+      BACKREST_PORT: 9898
+    volumes:
+      - "${DATA_ROOT}/backrest/data:/data:rw"
+      - "${DATA_ROOT}/backrest/config:/config:rw"
+      - "${DATA_ROOT}/backrest/cache:/cache:rw"
+      - "${DATA_ROOT}/backrest/ssh:/root/.ssh:ro"
+      - "${BACKREST_USERDATA_PATH}:/userdata:rw"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-backrest.name=Backrest"
+      - "pangolin.public-resources.${SITE_ID}-backrest.full-domain=${BACKREST_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-backrest.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-backrest.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-backrest.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-backrest.targets[0].port=9898"
+      - "homepage.name=Backrest"
+      - "homepage.href=https://${BACKREST_DOMAIN}/"
+      - "homepage.group=Web"
+      - "homepage.description=Restic Backup web UI"
+      - "homepage.icon=restic"
+    networks:
+      - pangolin
+
+networks:
+  pangolin:
+    name: pangolin
+    external: true

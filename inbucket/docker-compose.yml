@@ -1,0 +1,37 @@
+services:
+  inbucket:
+    image: inbucket/inbucket:${INBUCKET_TAG:-latest}
+    container_name: inbucket
+    restart: unless-stopped
+    user: "${PUID}:${PGID}"
+    ports:
+      - "${INBUCKET_SMTP_PORT:-2500}:2500"
+      - "${INBUCKET_POP3_PORT:-1100}:1100"
+    environment:
+      TZ: ${TZ}
+      INBUCKET_WEB_ADDR: "0.0.0.0:9000"
+      INBUCKET_SMTP_ADDR: "0.0.0.0:2500"
+      INBUCKET_POP3_ADDR: "0.0.0.0:1100"
+      INBUCKET_STORAGE_RETENTIONPERIOD: ${INBUCKET_RETENTION_PERIOD:-72h}
+    volumes:
+      - "./config:/config:ro"
+      - "${DATA_ROOT}/inbucket/storage:/storage:rw"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-inbucket.name=Inbucket"
+      - "pangolin.public-resources.${SITE_ID}-inbucket.full-domain=${INBUCKET_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-inbucket.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-inbucket.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-inbucket.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-inbucket.targets[0].port=9000"
+      - "homepage.name=Inbucket"
+      - "homepage.href=https://${INBUCKET_DOMAIN}/"
+      - "homepage.group=Services"
+      - "homepage.description=Disposable webmail service"
+      - "homepage.icon=docker-mailserver"
+    networks:
+      - pangolin
+
+networks:
+  pangolin:
+    name: pangolin
+    external: true

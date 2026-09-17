@@ -1,0 +1,62 @@
+services:
+  teslamate:
+    image: teslamate/teslamate:${TESLAMATE_TAG}
+    container_name: teslamate
+    restart: on-failure:5
+    environment:
+      TZ: ${TZ}
+      ENCRYPTION_KEY: ${TESLAMATE_ENCRYPTION_KEY}
+      DATABASE_USER: ${TM_DB_USER}
+      DATABASE_PASS: ${TM_DB_PASS}
+      DATABASE_NAME: ${TM_DB_NAME:-teslamate}
+      DATABASE_HOST: postgres16
+      MQTT_HOST: mosquitto
+      VIRTUAL_HOST: ${TESLAMATE_DOMAIN}
+      CHECK_ORIGIN: "false"
+      TESLA_API_MAX_RETRIES: ${TESLAMATE_API_MAX_RETRIES:-8}
+      TESLA_API_RETRY_DELAY_MS: ${TESLAMATE_API_RETRY_DELAY_MS:-40000}
+    volumes:
+      - "${DATA_ROOT}/teslamate/import:/opt/app/import:rw"
+    cap_drop:
+      - ALL
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-teslamate.name=TeslaMate"
+      - "pangolin.public-resources.${SITE_ID}-teslamate.full-domain=${TESLAMATE_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-teslamate.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-teslamate.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-teslamate.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-teslamate.targets[0].port=4000"
+      - "homepage.name=TeslaMate"
+      - "homepage.href=https://${TESLAMATE_DOMAIN}/"
+      - "homepage.group=Services"
+      - "homepage.description=TeslaMate access system"
+      - "homepage.icon=teslamate"
+    networks:
+      - app_net
+      - db_net
+      - pangolin
+
+  mosquitto:
+    image: eclipse-mosquitto:${MOSQUITTO_TAG}
+    container_name: teslamate-mosquitto
+    restart: on-failure:5
+    command: mosquitto -c /mosquitto-no-auth.conf
+    ports:
+      - "${TESLAMATE_MQTT_PORT}:1883"
+    volumes:
+      - "${DATA_ROOT}/teslamate/mosquitto-conf:/mosquitto/config:rw"
+      - "${DATA_ROOT}/teslamate/mosquitto-data:/mosquitto/data:rw"
+    environment:
+      TZ: ${TZ}
+    networks:
+      - app_net
+
+networks:
+  app_net:
+    internal: true
+  db_net:
+    name: db_network
+    external: true
+  pangolin:
+    name: pangolin
+    external: true

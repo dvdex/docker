@@ -1,0 +1,53 @@
+services:
+  dockerproxy:
+    image: ghcr.io/tecnativa/docker-socket-proxy:${DOCKER_SOCKET_PROXY_TAG:-0.3.0}
+    container_name: dockerproxy
+    restart: unless-stopped
+    environment:
+      CONTAINERS: "1"
+      SERVICES: "1"
+      TASKS: "1"
+      POST: "0"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - default
+
+  homepage:
+    image: ghcr.io/gethomepage/homepage:${HOMEPAGE_TAG:-latest}
+    container_name: homepage
+    restart: on-failure:5
+    mem_limit: 4g
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      - dockerproxy
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+      TZ: ${TZ}
+      HOMEPAGE_ALLOWED_HOSTS: ${HOMEPAGE_DOMAIN}
+    volumes:
+      - "./config:/app/config:rw"
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-homepage.name=Homepage"
+      - "pangolin.public-resources.${SITE_ID}-homepage.full-domain=${HOMEPAGE_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-homepage.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-homepage.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-homepage.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-homepage.targets[0].port=3000"
+      - "homepage.name=Homepage"
+      - "homepage.href=https://${HOMEPAGE_DOMAIN}/"
+      - "homepage.group=Services"
+      - "homepage.description=Service dashboard"
+      - "homepage.icon=homepage"
+    networks:
+      - default
+      - pangolin
+
+networks:
+  default:
+  pangolin:
+    name: pangolin
+    external: true

@@ -1,0 +1,77 @@
+services:
+  immich:
+    image: ghcr.io/immich-app/immich-server:${IMMICH_TAG:-v2}
+    container_name: immich
+    user: "${PUID}:${PGID}"
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - "${DATA_ROOT}/immich/upload:/usr/src/app/upload:rw"
+      - "${IMMICH_EXTERNAL_PATH}:/usr/src/app/external:rw"
+    environment:
+      TZ: ${TZ}
+      IMMICH_MACHINE_LEARNING_URL: "http://immich-machine-learning:3003"
+      DB_HOSTNAME: postgres16
+      DB_DATABASE_NAME: ${IMMICH_DB_NAME:-immich}
+      DB_USERNAME: ${IMMICH_DB_USER}
+      DB_PASSWORD: ${IMMICH_DB_PASSWORD}
+      REDIS_HOSTNAME: redis7
+      REDIS_PORT: 6379
+      REDIS_DBINDEX: ${IMMICH_REDIS_DBINDEX:-2}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-immich.name=Immich"
+      - "pangolin.public-resources.${SITE_ID}-immich.full-domain=${IMMICH_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-immich.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-immich.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-immich.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-immich.targets[0].port=2283"
+      - "homepage.name=Immich"
+      - "homepage.href=https://${IMMICH_DOMAIN}/"
+      - "homepage.group=Media"
+      - "homepage.description=Photo/Video management solution"
+      - "homepage.icon=immich"
+    networks:
+      - db_net
+      - pangolin
+
+  immich-machine-learning:
+    image: ghcr.io/immich-app/immich-machine-learning:${IMMICH_TAG:-v2}
+    container_name: immichml
+    user: "${PUID}:${PGID}"
+    restart: on-failure:5
+    security_opt:
+      - no-new-privileges:true
+    volumes:
+      - "${DATA_ROOT}/immich/cache:/cache:rw"
+    environment:
+      TZ: ${TZ}
+      MPLCONFIGDIR: /cache/matplotlib
+    networks:
+      - db_net
+
+  immich-folder-album-creator:
+    image: salvoxia/immich-folder-album-creator:${IMMICH_ALBUM_CREATOR_TAG:-latest}
+    container_name: immichalbumcreator
+    user: "${PUID}:${PGID}"
+    restart: on-failure:5
+    environment:
+      TZ: ${TZ}
+      API_URL: "http://immich:2283/api"
+      API_KEY: ${IMMICH_API_KEY}
+      ROOT_PATH: /usr/src/app/external
+      ALBUM_LEVELS: 2
+      SET_ALBUM_THUMBNAIL: first
+      UNATTENDED: "1"
+      CRON_EXPRESSION: "${IMMICH_ALBUM_CREATOR_CRON:-5 1 * * *}"
+    networks:
+      - db_net
+
+networks:
+  db_net:
+    name: db_network
+    external: true
+  pangolin:
+    name: pangolin
+    external: true

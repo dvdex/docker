@@ -1,0 +1,30 @@
+services:
+  redis7:
+    image: redis:${REDIS_TAG:-7}
+    container_name: redis7
+    command:
+      - /bin/sh
+      - -c
+      - redis-server --requirepass ${REDIS_PASSWORD}
+    mem_limit: 512m
+    mem_reservation: 256m
+    cpu_shares: 768
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    user: "${PUID}:${PGID}"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -a \"$$REDIS_PASSWORD\" ping || exit 1"]
+    environment:
+      TZ: ${TZ}
+      REDIS_PASSWORD: ${REDIS_PASSWORD}
+    volumes:
+      - "${DATA_ROOT}/redis7/data:/data:rw"
+    restart: on-failure:5
+    networks:
+      - db_net
+
+networks:
+  db_net:
+    name: db_network
+    external: true

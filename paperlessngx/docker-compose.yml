@@ -1,0 +1,66 @@
+services:
+  paperlessngx:
+    image: ghcr.io/paperless-ngx/paperless-ngx:${PAPERLESS_TAG:-2.20.11}
+    container_name: paperlessngx
+    mem_limit: 6g
+    cpu_shares: 1024
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "--max-time", "2", "http://localhost:8000"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    volumes:
+      - "${DATA_ROOT}/paperlessngx/data:/usr/src/paperless/data:rw"
+      - "${DATA_ROOT}/paperlessngx/media:/usr/src/paperless/media:rw"
+      - "${DATA_ROOT}/backup/paperlessngx:/usr/src/paperless/export:rw"
+      - "${PAPERLESS_CONSUME_PATH}:/usr/src/paperless/consume:rw"
+      - "${DATA_ROOT}/paperlessngx/trash:/usr/src/paperless/trash:rw"
+    environment:
+      PAPERLESS_REDIS: "redis://:${REDIS_PASSWORD}@redis7:6379/5"
+      PAPERLESS_DBENGINE: postgresql
+      PAPERLESS_DBHOST: postgres16
+      PAPERLESS_DBNAME: paperless
+      PAPERLESS_DBUSER: ${PAPERLESS_DBUSER}
+      PAPERLESS_DBPASS: ${PAPERLESS_DBPASS}
+      PAPERLESS_EMPTY_TRASH_DIR: ../trash
+      PAPERLESS_FILENAME_FORMAT: "{{ created_year }}/{{ document_type }}/{{ correspondent }}/{{ title }}"
+      PAPERLESS_OCR_ROTATE_PAGES_THRESHOLD: 6
+      PAPERLESS_TASK_WORKERS: 1
+      USERMAP_UID: ${PUID}
+      USERMAP_GID: ${PGID}
+      PAPERLESS_TIME_ZONE: ${TZ}
+      PAPERLESS_URL: "https://${PAPERLESS_DOMAIN}"
+      PAPERLESS_CSRF_TRUSTED_ORIGINS: "https://${PAPERLESS_DOMAIN}"
+      PAPERLESS_ADMIN_USER: ${PAPERLESS_ADMIN_USER}
+      PAPERLESS_ADMIN_PASSWORD: ${PAPERLESS_ADMIN_PASSWORD}
+      PAPERLESS_APPS: allauth.socialaccount.providers.openid_connect
+      PAPERLESS_SOCIALACCOUNT_PROVIDERS: >-
+        {"openid_connect":{"SCOPE":["openid","profile","email"],"OAUTH_PKCE_ENABLED":true,"APPS":[{"provider_id":"pocket-id","name":"Pocket-ID","client_id":"${PAPERLESS_OIDC_CLIENT_ID}","secret":"${PAPERLESS_OIDC_CLIENT_SECRET}","settings":{"server_url":"${OIDC_ISSUER}"}}]}}
+      PAPERLESS_OCR_LANGUAGE: deu+eng
+      PAPERLESS_OCR_USER_ARGS: '{"invalidate_digital_signatures": true}'
+    restart: on-failure:5
+    labels:
+      - "pangolin.public-resources.${SITE_ID}-paperless.name=Paperless"
+      - "pangolin.public-resources.${SITE_ID}-paperless.full-domain=${PAPERLESS_DOMAIN}"
+      - "pangolin.public-resources.${SITE_ID}-paperless.mode=http"
+      - "pangolin.public-resources.${SITE_ID}-paperless.auth.sso-enabled=${PANGOLIN_SSO:-false}"
+      - "pangolin.public-resources.${SITE_ID}-paperless.targets[0].method=http"
+      - "pangolin.public-resources.${SITE_ID}-paperless.targets[0].port=8000"
+      - "homepage.name=Paperless"
+      - "homepage.href=https://${PAPERLESS_DOMAIN}/"
+      - "homepage.group=Media"
+      - "homepage.description=Document management system"
+      - "homepage.icon=paperless-ngx"
+    networks:
+      - db_net
+      - pangolin
+
+networks:
+  db_net:
+    name: db_network
+    external: true
+  pangolin:
+    name: pangolin
+    external: true

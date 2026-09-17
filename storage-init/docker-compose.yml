@@ -1,0 +1,39 @@
+services:
+  storage-init:
+    image: alpine:${ALPINE_TAG:-3.22}
+    container_name: storage-init
+    user: "0:0"
+    restart: "no"
+    environment:
+      PUID: ${PUID}
+      PGID: ${PGID}
+    volumes:
+      - "${DATA_ROOT}:/data-root"
+    command:
+      - /bin/sh
+      - -ec
+      - |
+        paths="
+          anysync/data
+          backrest/data backrest/config backrest/cache backrest/ssh
+          backup
+          freshrss/config
+          grafana/grafana-data
+          immich/upload immich/cache
+          inbucket/config inbucket/storage
+          jellyfin/config jellyfin/cache jellyfin/logs
+          linkwarden/data
+          nextcloud
+          paperlessngx/data paperlessngx/media paperlessngx/consume paperlessngx/trash
+          postgres16/data postgres16/pgadmin-data postgres16/log
+          redis7/data
+          sftpgo/data sftpgo/config
+          syncthing/config syncthing/data
+          technitium/config
+          teslamate/import teslamate/mosquitto-conf teslamate/mosquitto-data
+          vaultwarden
+        "
+        for path in $$paths; do
+          mkdir -p "/data-root/$$path"
+          chown "$$PUID:$$PGID" "/data-root/$$path"
+        done

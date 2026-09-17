@@ -1,0 +1,17 @@
+-- Static first-boot initialisation for the shared PostgreSQL 16 instance.
+--
+-- This file is shipped from Git and mounted read-only at
+-- /docker-entrypoint-initdb.d/init.sql. PostgreSQL executes it only while
+-- initialising an empty ${DATA_ROOT}/postgres16/data directory; it is ignored
+-- on every later start, so an existing cluster is never modified.
+--
+-- Passwords must not be committed. Create per-application roles here without a
+-- password and set the password afterwards from the site's secret store, or
+-- create the role and database manually on first deployment, for example:
+--
+--   CREATE ROLE immich_user LOGIN;
+--   CREATE DATABASE immich OWNER immich_user;
+--   \password immich_user
+--
+-- Consumers of this instance at the time of writing: Immich (immich),
+-- Paperless-ngx (paperless), TeslaMate (teslamate), PG Back Web.
