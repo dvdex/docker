@@ -44,7 +44,7 @@ services:
     volumes:
       - "/volume1/docker/yuvomi/data:/data:rw"
       - "/volume1/docker/yuvomi/modules:/app/modules:rw"
-      - "/volume1/docker/yuvomi/documents:/app/documents:rw"
+      - "/volume1/docker/yuvomi/documents:/documents:rw"
       - "/volume1/docker/backup/yuvomi:/backups:rw"
     ports:
       - 3245:3000
