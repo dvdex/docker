@@ -1,0 +1,54 @@
+# Labels for Traefik, Watchtower, and Autoheal
+#   (docker compose ignores fields that start with `x-`. So we can use them to
+#    define reusable fragments with `&anchors`. See:
+#    https://docs.docker.com/compose/compose-file/11-extension/ )
+x-labels: &base_labels
+      com.centurylinklabs.watchtower.enable: "true"
+      autoheal: "true"
+      
+      homepage.group: "Services"
+      homepage.description: "family planner"
+      homepage.icon: "sh-yuvomi"
+
+# Reusable default networks configuration to ensure container is part of both
+# the traefik network and the default network of this compose file
+x-networks: &base_networks
+  default:
+      
+
+# The main Docker Compose file
+services:
+  yuvomi:
+    image: "ghcr.io/ulsklyc/yuvomi:latest"
+    container_name: "yuvomi"
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', r => process.exit(r.statusCode === 200 ? 0 : 1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    restart: on-failure:5
+    environment:
+      TZ: Europe/Zurich
+      NODE_ENV: production
+      DB_PATH: /data/yuvomi.db
+      BACKUP_DIR: /backups
+      MODULES_DIR: /app/modules
+      DOCUMENT_STORAGE_LOCAL_ENABLED: true
+      DOCUMENT_STORAGE_LOCAL_PATH: /documents
+      SESSION_SECURE: false #or true instead of false if you use Reverse Proxy or your own Domain name for secure Origin.
+      TRUST_PROXY: 0 #or 1 instead of 0 if you use Reverse Proxy or your own Domain name for secure Origin.
+      SESSION_SECRET: ${SESSION_SECRET_ENV}
+      DB_ENCRYPTION_KEY: ${DB_ENCRYPTION_KEY_ENV}
+    user: 1029:100
+    volumes:
+      - "/volume1/docker/yuvomi/data:/data:rw"
+      - "/volume1/docker/yuvomi/modules:/app/modules:rw"
+      - "/volume1/docker/yuvomi/documents:/app/documents:rw"
+      - "/volume1/docker/backup/yuvomi:/backups:rw"
+    ports:
+      - 3245:3000
+
+    labels: *base_labels
+    networks: *base_networks
+
