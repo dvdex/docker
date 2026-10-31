@@ -4,7 +4,7 @@
 #    https://docs.docker.com/compose/compose-file/11-extension/ )
 x-labels: &base_labels
       homepage.name: "yuvomi"
-      homepage.href: "http://zoonas.i234.me:3245/"
+      homepage.href: "https://yuvomi.zoonas.i234.me/"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
       
@@ -42,6 +42,10 @@ services:
       TRUST_PROXY: 0 #or 1 instead of 0 if you use Reverse Proxy or your own Domain name for secure Origin.
       SESSION_SECRET: ${SESSION_SECRET_ENV}
       DB_ENCRYPTION_KEY: ${DB_ENCRYPTION_KEY_ENV}
+      OIDC_ISSUER: https://pocketid.zoonas.i234.me
+      OIDC_CLIENT_ID: ${YUVOMI_CLIENT_ID_ENV}
+      OIDC_CLIENT_SECRET: ${YUVOMI_CLIENT_SECRET_ENV}
+      OIDC_REDIRECT_URI: https://yuvomi.zoonas.i234.me/api/v1/auth/oidc/callback
     user: 1029:100
     volumes:
       - "/volume1/docker/yuvomi/data:/data:rw"
