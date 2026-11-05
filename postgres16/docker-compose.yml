@@ -24,7 +24,7 @@ services:
   postgres16:
     container_name: postgres16
     user: "1029:100"
-    image: ghcr.io/immich-app/postgres:16-vectorchord0.3.0
+    image: ghcr.io/immich-app/postgres:16-vectorchord0.4.3
     mem_limit: 1g
     cpu_shares: 768
     security_opt:
