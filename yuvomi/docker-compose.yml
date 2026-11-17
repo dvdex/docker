@@ -7,9 +7,8 @@ x-labels: &base_labels
       homepage.href: "https://yuvomi.zoonas.i234.me/"
       com.centurylinklabs.watchtower.enable: "true"
       autoheal: "true"
-      
       homepage.group: "Media"
-      homepage.description: "family planner"
+      homepage.description: "Family planner"
       homepage.icon: "sh-yuvomi"
 
 # Reusable default networks configuration to ensure container is part of both
@@ -35,6 +34,7 @@ services:
       NODE_ENV: production
       DB_PATH: /data/yuvomi.db
       BACKUP_DIR: /backups
+      BACKUP_SCHEDULE: 0 22 * * *
       MODULES_DIR: /app/modules
       DOCUMENT_STORAGE_LOCAL_ENABLED: true
       DOCUMENT_STORAGE_LOCAL_PATH: /documents
